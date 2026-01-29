@@ -81,7 +81,6 @@ export function verifyTextField(
         });
 }
 
-
 // Verify Button styles and behavior
 export function verifyButton(selector, expected = {}, shouldClick = false) {
   cy.get(selector).eq(0).contains(expected.text).should("exist").and("be.visible")
