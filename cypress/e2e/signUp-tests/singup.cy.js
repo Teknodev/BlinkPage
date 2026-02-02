@@ -613,6 +613,4 @@ describe('Candidate Registration & SignUp', () => {
         loginPage.clickEyeIcon(0);
 
     });
-
-
 });
