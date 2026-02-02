@@ -34,7 +34,7 @@ class LoginPage {
     }
 
     clickProfileIcon() {
-        cy.get('button._profileButton_1sr71_5').should('be.visible').click();
+        cy.get('button._profileButton_1sr71_5', { timeout: 20000 }).should('be.visible').click();
         //Verify URL after clicking profile icon
         cy.url().should('eq', 'https://app.blinkpage.app/authentication');
         //Verify Logo
@@ -42,8 +42,8 @@ class LoginPage {
 
     }
 
-    clickEyeIcon() {
-        cy.get('span._icon_1ov99_55').should('be.visible').click();
+    clickEyeIcon(index=0) {
+        cy.get('span._icon_1ov99_55').eq(index).should('be.visible').click();
         //Password should be visible now
         cy.get('input[name="password"]').should('have.attr', 'type', 'text');
     }
