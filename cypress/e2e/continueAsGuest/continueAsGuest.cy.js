@@ -1,5 +1,5 @@
 import { createNewWebsiteBtn, loginWithValidData, signUpWithValidData, verifyTextField, webCreationFlow } from "../../support/common";
-import { continueAsGuestPage } from "../../support/pages/continueAsGuest.cy";
+import { continueAsGuestPage } from "../../support/pages/continueAsGuest";
 import { loginPage } from "../../support/pages/loginPage";
 import { signUpPage } from "../../support/pages/signUpPage";
 
@@ -24,7 +24,7 @@ describe('Enter the application as a guest user', () => {
 
         webCreationFlow();
 
-        loginPage.clickProfileIcon();
+        loginPage.clickProfileIcon('');
 
         signUpPage.singUpButton();
 
