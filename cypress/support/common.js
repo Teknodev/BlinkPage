@@ -69,7 +69,7 @@ export function verifyTextField(
         // cy.get(selector).dblclick();
         cy.get(selector)
           .should('be.visible')
-          .dblclick()          // activate cell
+         .dblclick()          // activate cell
           .clear()
           .type(expected.value);
 
@@ -356,3 +356,19 @@ export const forgotPasswordModal = (email) => {
 
   cy.get('button._buttonAttom_1k5xv_1._primary_1k5xv_28').contains('Recover').should('be.visible').click();
 };
+export const verifyUrl = (url) => {
+  cy.url().should('include', url)
+
+
+}
+export const verifyErrorMessage = (loc, message) =>{
+  cy.get(loc).contains(message).should('be.visible')
+}
+export const fieldInput = (loc, placeholder, text) => {
+  cy.log(placeholder)
+  cy.get(loc)
+  .should('be.visible')
+  .and('have.attr', 'placeholder', placeholder)
+  .type(text)
+
+}

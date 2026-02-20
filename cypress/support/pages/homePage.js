@@ -12,6 +12,10 @@ class HomePage {
                 )
         })
     }
+    verifyProfileDropDown(){
+        cy.get('[class*="_dropdownMenu"]').should('be.visible')
+
+    }
 
 }
 

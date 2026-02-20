@@ -31,12 +31,12 @@ class LoginPage {
             cy.contains('div._right_xlx0w_19 a', text)
                 .should('be.visible');
         });
+
+
     }
 
     clickProfileIcon() {
         cy.get('button._profileButton_1sr71_5', { timeout: 20000 }).should('be.visible').click();
-        //Verify URL after clicking profile icon
-        cy.url().should('eq', 'https://app.blinkpage.app/authentication');
         //Verify Logo
         cy.get('img[alt="Logo"]').should('be.visible');
 
@@ -68,6 +68,17 @@ class LoginPage {
 
     forgotPasswordButton() {
         cy.get('div._link_1ov99_66 span').eq(0).should('be.visible').contains('Forgotten password?').click();
+    }
+
+    verifyFooterRedirections(){
+        cy.contains('a', 'Privacy Policy').click();
+        cy.url().should('include', '/policy');
+        cy.go('back');
+        cy.contains('a', 'Terms and Conditions').click();
+        cy.url().should('include', '/terms');
+        cy.contains('Copyright © 2024 Blinkpage LTD. All rights reserved.').should('be.visible');
+
+
     }
 }
 
