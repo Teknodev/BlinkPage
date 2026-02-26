@@ -1,0 +1,339 @@
+// const { loginPage } = require("../../support/pages/loginPage");
+
+import { verifyAndClickProfileDropDownButton, loginWithValidData,verifyUrl, veirfyDetails, verifyInputValue, uploadProfileImage, verifyButton } from "../../support/common";
+import { homePage } from "../../support/pages/homePage";
+import { loginPage } from "../../support/pages/loginPage";
+import { myAccountPage } from "../../support/pages/account";
+import data from '../../fixtures/data.json'
+
+
+describe('My Account', () => {
+    beforeEach(() => {
+        // Visit the app's root page
+        cy.visit('/')
+        //Veirfy UI Elements on Landing Page
+        loginPage.verifyHeader();
+        loginPage.verifyLandingBody();
+        loginPage.createNewWebsiteBtn();
+        loginPage.verifyFooter();
+        loginPage.clickProfileIcon();
+        loginWithValidData(data.email,data.password)
+
+        loginPage.clickProfileIcon();
+
+        homePage.verifyProfileDropDown();
+
+        verifyAndClickProfileDropDownButton('Account','Manage your profile and preferences')
+
+        verifyUrl('/profile')
+
+  })
+    it('Verify Account page loads successfully', () => {
+
+
+        myAccountPage.verifyMyAccountPage("Account");
+
+    });
+    it('Verify user details are displayed correctly and Upload valid JPG image', () => {
+        myAccountPage.verifyMyAccountPage("Account");
+
+        // deleteing already uploaded image
+        myAccountPage.deleteUplaodedImage()
+        // Upload image (always runs)
+        uploadProfileImage('input#avatar-upload','Test.jpeg');
+        // verify the success message
+        myAccountPage.verifySuccessMessage('Profile updated successfully!')
+        // Delete the upload image
+        myAccountPage.verifyDeletebutton();
+        myAccountPage.verifySuccessMessage;
+
+        veirfyDetails('[class*="_cardTitle_aynuf"]','My Profile');
+
+        // Verify Name
+        veirfyDetails('[class*="_userName_aynuf"]',data.name);
+
+        // Verify email 
+        veirfyDetails('[class*="_userEmail_aynuf"]', data.email);
+
+        // Personal Information
+        veirfyDetails('[class*="_cardTitle_aynuf"]','Personal Information');
+
+        veirfyDetails('[class*="_fieldLabel_aynuf"]','Name');
+        verifyInputValue('[class*="_input_1i94w_1 undefined"]',data.name);
+        veirfyDetails('[class*="_fieldLabel_aynuf"]','Phone Number');
+        verifyInputValue('[placeholder="Enter phone number"]',data.phone);
+
+        veirfyDetails('[class*="_fieldLabel_aynuf"]','Country');
+        veirfyDetails('[class*="_fieldLabel_aynuf"]','Date of Birth');
+
+    });
+    it('Upload valid PNG image', () => {
+
+        myAccountPage.verifyMyAccountPage("Account");
+
+    // My Profile
+
+        myAccountPage.deleteUplaodedImage();
+
+        uploadProfileImage('input#avatar-upload','Test1.png');
+
+        myAccountPage.verifySuccessMessage('Profile updated successfully!')
+
+        myAccountPage.verifyDeletebutton();
+
+
+
+        
+
+    });
+    it('Replace existing profile picture', () => {
+
+        myAccountPage.verifyMyAccountPage("Account");
+
+    // My Profile
+
+        myAccountPage.deleteUplaodedImage();
+
+        uploadProfileImage('input#avatar-upload','Test1.png');
+
+        myAccountPage.verifySuccessMessage('Profile updated successfully!')
+
+        uploadProfileImage('input#avatar-upload','Test.jpeg');
+
+        
+
+
+
+        
+
+    });
+    it('Verify image persists after page refresh', () => {
+
+        myAccountPage.verifyMyAccountPage("Account");
+
+    // My Profile
+
+        myAccountPage.deleteUplaodedImage();
+
+        uploadProfileImage('input#avatar-upload','Test1.png');
+        
+        myAccountPage.verifySuccessMessage('Profile updated successfully!')
+
+        myAccountPage.verifyUploadedImage()
+
+        
+
+          
+
+    });
+    it('Upload unsupported file type (.txt)', () => {
+
+        myAccountPage.verifyMyAccountPage("Account");
+
+    // My Profile
+
+        myAccountPage.deleteUplaodedImage();
+
+        uploadProfileImage('input#avatar-upload','Text.txt');
+        
+        myAccountPage.verifySuccessMessage('Profile updated successfully!')
+
+        myAccountPage.verifyUploadedImage()
+
+        
+
+          
+
+    });
+    it('Verify Edit button is visible and clicking edit button should make the fields editable.', () => {
+
+        myAccountPage.verifyMyAccountPage("Account");
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.verifyButton('Cancel');
+
+    });
+    it('Update name with valid data', () => {
+
+        // updating the name
+        myAccountPage.verifyMyAccountPage("Account");
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', 'Shah',)
+        myAccountPage.verifyButton('Save')
+        myAccountPage.verifySuccessMessage('Profile updated successfully!')
+        
+        // again changing to previous one 
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', data.name,)
+        myAccountPage.verifyButton('Save');   
+        myAccountPage.verifySuccessMessage('Profile updated successfully!');
+
+    });
+    it('Update name with empty name', () => {
+
+        // updating the name
+        myAccountPage.verifyMyAccountPage("Account");
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', ' ',)
+        myAccountPage.verifyDisableButton('Save')
+        
+
+    });
+    it('Update name with numeric data', () => {
+
+        // updating the name
+        myAccountPage.verifyMyAccountPage("Account");
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', '466373',)
+        myAccountPage.verifyButton('Save')
+        myAccountPage.verifySuccessMessage('Profile updated successfully!')
+
+        // again changing to previous one 
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', data.name,)
+        myAccountPage.verifyButton('Save');   
+
+    });
+    it('Enter valid phone number', () => {
+
+        // updating the name
+        myAccountPage.verifyMyAccountPage("Account");
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', '1234567890',1)
+        myAccountPage.verifyButton('Save')
+        myAccountPage.verifySuccessMessage('Profile updated successfully!');
+
+        // again changing to previous one 
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', data.phone,1)
+        myAccountPage.verifyButton('Save');   
+        myAccountPage.verifySuccessMessage('Profile updated successfully!');
+
+    });
+    it('Enter alphabets', () => {
+
+        // updating the phone number with alphabets
+        myAccountPage.verifyMyAccountPage("Account");
+        myAccountPage.verifyButton('Edit');
+        cy.get('[class*="_input_1i94w_1 undefined"]').eq(1).type('abcde').should('have.value', '');
+
+
+    });
+    it('Enter special characters', () => {
+
+        // updating the phone number with alphabets
+        myAccountPage.verifyMyAccountPage("Account");
+        myAccountPage.verifyButton('Edit');
+        cy.get('[class*="_input_1i94w_1 undefined"]').eq(1).type('@#$@').should('have.value', '');
+
+    });
+    it('Verify the user can select the country from the dropdown', () => {
+        
+        //select the state
+        myAccountPage.verifyMyAccountPage("Account");
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.verifySelectCountry('Afghanistan')
+        myAccountPage.verifyButton("Save");
+        myAccountPage.verifySuccessMessage('Profile updated successfully!');
+
+        // Deselect the state
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.verifyDeselectState()
+        myAccountPage.verifyButton("Save");
+
+
+    });
+    it('Verify the count of state available in dropdown list', () => {
+        
+        //select the state
+        myAccountPage.verifyMyAccountPage("Account");
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.verifyCountryDropDownData();
+        myAccountPage.verifyDropDownOptions();
+    });
+    it('Verify user can select valid DOB', () => {
+        
+        //select the state
+        myAccountPage.verifyMyAccountPage("Account");
+        myAccountPage.verifyButton('Edit');
+        myAccountPage.openDatePicker();
+        myAccountPage.selectValidDOB();
+        myAccountPage.verifyButton('Save');
+
+
+
+    });
+    it('Verify email is read-only and verified icon shown', () => {
+        
+        //select the state
+        myAccountPage.verifyMyAccountPage("Account");
+        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
+        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Email')
+        cy.wait(9000)
+        myAccountPage.verifyEmailisVerified(data.email);
+
+
+
+        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
+        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••')
+    });
+    it('Verify change password button is visible and clickable.', () => {
+        
+        //select the state
+        myAccountPage.verifyMyAccountPage("Account");
+        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
+        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
+        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••');
+        myAccountPage.verifyButton('Change password')
+
+    });
+    it('Verify Clicking the change password button opens Reset Password modal.', () => {
+        //select the state
+        myAccountPage.verifyMyAccountPage("Account");
+        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
+        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
+        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••');
+        myAccountPage.verifyButton('Change password');
+        myAccountPage.verfyResetPasswordModal();
+        myAccountPage.verifyButton('Send reset email');
+        myAccountPage.verifyButton('Cancel');
+    });
+    it('Verify Close modal using X icon', () => {
+        //select the state
+        myAccountPage.verifyMyAccountPage("Account");
+        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
+        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
+        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••');
+        myAccountPage.verifyButton('Change password');
+        cy.get('[class="_button_ivllp_1"]').eq(1).should('be.visible').click();
+        cy.get('[class="_container_njae3_16 undefined"]').should('not.exist');
+
+    });
+    it('Verify Logout successfully', () => {
+        //select the state
+        myAccountPage.verifyMyAccountPage("Account");
+        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
+        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
+        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••');
+        myAccountPage.verifyButton('Logout');
+        verifyUrl('/authentication');
+    
+    });
+    it('Verify delete button and modal', () => {
+        //select the state
+        myAccountPage.verifyMyAccountPage("Account");
+        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
+        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
+        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••');
+        myAccountPage.verifyButton('Delete account');
+        myAccountPage.verifyDeleteAccountModal();
+        myAccountPage.verifyButton('Cancel')
+        
+    
+    });
+
+    
+
+
+
+
+});

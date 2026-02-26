@@ -2,6 +2,7 @@
 
 import { verifyTextField } from "../../support/common";
 import { loginPage } from "../../support/pages/loginPage";
+import data from '../../fixtures/data.json'
 
 
 describe('Candidate Registration & Apply', () => {
@@ -19,8 +20,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[name="email"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "shahbahram97@gamil.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: data.email, 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "E-mail"
       },
       true,
       true
@@ -30,8 +37,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[type="password"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "Wrong123", shouldType: true, shouldClear: true, placeholder: "Password"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: "Wrong123", 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "Password"
       },
       true,
       true
@@ -57,8 +70,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[name="email"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "invalid@test.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: "invalid@test.com", 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "E-mail"
       },
       true,
       true
@@ -68,8 +87,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[type="password"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "BlinkPage7424", shouldType: true, shouldClear: true, placeholder: "Password"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: data.password, 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "Password"
       },
       true,
       true
@@ -95,8 +120,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[name="email"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "", shouldType: true, shouldClear: true, placeholder: "E-mail"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: "", 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "E-mail"
       },
       true,
       true
@@ -111,8 +142,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[type="password"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "", shouldType: true, shouldClear: true, placeholder: "Password"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: "", 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "Password"
       },
       true,
       true
@@ -138,8 +175,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[name="email"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "test@invalid", shouldType: true, shouldClear: true, placeholder: "E-mail"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: "test@invalid", 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "E-mail"
       },
       true,
       true
@@ -154,8 +197,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[type="password"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "123", shouldType: true, shouldClear: true, placeholder: "Password"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: "123", 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "Password"
       },
       true,
       true
@@ -168,8 +217,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[type="password"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "12345", shouldType: true, shouldClear: true, placeholder: "Password"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: "12345", 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "Password"
       },
       true,
       true
@@ -183,8 +238,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[type="password"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "A@12345", shouldType: true, shouldClear: true, placeholder: "Password"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: "A@12345", 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "Password"
       },
       true,
       true
@@ -220,8 +281,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[name="email"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "SHAHBAHRAM97@GMAIL.COM", shouldType: true, shouldClear: true, placeholder: "E-mail"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: "SHAHBAHRAM97@GMAIL.COM", 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "E-mail"
       },
       true,
       true
@@ -231,8 +298,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[type="password"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "BlinkPage7424", shouldType: true, shouldClear: true, placeholder: "Password"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: data.password, 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "Password"
       },
       true,
       true
@@ -263,8 +336,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[name="email"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "shahbahram97@gamil.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: data.email, 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "E-mail"
       },
       true,
       true
@@ -274,8 +353,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[type="password"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "BlinkPage1", shouldType: true, shouldClear: true, placeholder: "Password"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: "BlinkPage1", 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "Password"
       },
       true,
       true
@@ -327,8 +412,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[name="email"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "shahbahram97@gamil.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: data.email, 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "E-mail"
       },
       true,
       true
@@ -338,8 +429,14 @@ describe('Candidate Registration & Apply', () => {
     verifyTextField(
       'input[type="password"]',
       {
-        fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', value: "BlinkPage7424", shouldType: true, shouldClear: true, placeholder: "Password"
+        fontSize: "10px", 
+        textColor: "rgb(220, 220, 220)", 
+        backgroundColor: "rgb(33, 33, 33)",
+        borderRadius: '6px', 
+        value: data.password, 
+        shouldType: true, 
+        shouldClear: true, 
+        placeholder: "Password"
       },
       true,
       true

@@ -372,3 +372,31 @@ export const fieldInput = (loc, placeholder, text) => {
   .type(text)
 
 }
+export const verifyAndClickProfileDropDownButton = (title,text) => {
+        cy.get('button._dropdownItem_1sr71_79').each(($btn) => {
+            const label = $btn.find('._itemLabel_1sr71_99').text().trim();
+            const description = $btn.find('._itemDescription_1sr71_102').text().trim();
+            if (label === title && description === text) {
+                cy.wrap($btn).click();
+            }
+        });
+}
+export const veirfyDetails = (loc,text) => {
+  cy.get(loc).contains(text).should('be.visible')
+}
+export const verifyInputValue = (locator, expectedValue) => {
+  cy.get(locator)
+    .should('exist')
+    .invoke('val')
+    .should('eq', expectedValue);
+};
+export const uploadProfileImage = (locator, fileName) => {
+  cy.get(locator)
+    .should('exist')
+    .selectFile(`cypress/fixtures/${fileName}`, { force: true });
+};
+export const verifySuccessToast = (message) => {
+  cy.get('[role="alert"].Toastify__toast--success', { timeout: 10000 })
+    .should('be.visible')
+    .and('contain.text', message);
+};
