@@ -7,7 +7,7 @@ import { continueAsGuestPage } from "../../support/pages/continueAsGuest";
 import { contactUsPage } from "../../support/pages/contact";
 
 
-describe('Candidate Registration & Apply', () => {
+describe('Home Page ', () => {
     beforeEach(() => {
         // Visit the app's root page
         cy.visit('/')
