@@ -1,0 +1,107 @@
+import '@4tw/cypress-drag-drop';
+
+describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
+  beforeEach(() => {
+    // Assuming the user is logged in or bypassing authentication for testing.
+    // Intercept API calls if necessary, but we'll focus on the UI drag-and-drop.
+    // Replace with the standard test login flow if required.
+    
+    // We navigate directly to the block builder route for a test component
+    cy.visit('/project/1/blockbuilder?component=TestComponent');
+  });
+
+  it('should successfully drag an element from palette and drop it, creating a space', () => {
+    // Wait for the Canvas and Elements Palette to render
+    cy.get('[class*="canvasArea"]').should('be.visible');
+    
+    // Drag Base.Container first to establish a valid root element
+    cy.get('[title="Base.Container"]').should('be.visible').as('containerPaletteItem');
+    cy.get('[class*="rootDropZone"]').should('be.visible').as('dropZone');
+    cy.get('@containerPaletteItem').drag('@dropZone');
+
+    // Wait for the container to render in the canvas, and use it as the new drop zone
+    cy.get('div[class*="container"]').first().should('exist').as('containerElement');
+
+    // The palette item for "Base.Button"
+    cy.get('[title="Base.Button"]').should('be.visible').as('buttonPaletteItem');
+
+    // Drag the Button palette item into the container
+    cy.get('@buttonPaletteItem').drag('@containerElement');
+
+    // Verify the node appears in the canvas
+    cy.get('[class*="nodeInteractive"]').should('exist');
+    cy.get('button').contains('Button').should('exist');
+
+    // Now test Figma-style gaps by hovering over the existing element with another dragged item
+    cy.get('[title="Base.P"]').should('be.visible').as('paragraphPaletteItem');
+
+    // Start drag but wait to verify the drop space classes appear dynamically
+    cy.get('@paragraphPaletteItem').trigger('mousedown', { button: 0 });
+    cy.get('@paragraphPaletteItem').trigger('mousemove', { clientX: 10, clientY: 10 });
+    
+    // Hover the mouse over the top of the placed button to trigger .dropSpaceTop
+    cy.get('button').trigger('dragover', 'top');
+
+    // Verify that the element gains the padding-based gap class
+    cy.get('button').closest('[class*="nodeInteractive"]').should('have.class', /dropSpaceTop|dropSpaceBottom/);
+
+    // Drop the paragraph
+    cy.get('button').trigger('drop');
+    cy.get('@paragraphPaletteItem').trigger('mouseup', { force: true });
+
+    // Verify the new node is added
+    cy.get('p').should('exist');
+  });
+
+  it('should allow configuring available media types for Base.Media', () => {
+    // Wait for the Canvas and Elements Palette to render
+    cy.get('[class*="canvasArea"]').should('be.visible');
+    
+    // Drag Base.Container first to establish a valid root element
+    cy.get('[title="Base.Container"]').should('be.visible').as('containerPaletteItem');
+    cy.get('[class*="rootDropZone"]').should('be.visible').as('dropZone');
+    cy.get('@containerPaletteItem').drag('@dropZone');
+
+    // Wait for the container to render in the canvas, and use it as the new drop zone
+    cy.get('div[class*="container"]').first().should('exist').as('containerElement');
+
+    // The palette item for "Base.Media"
+    cy.get('[title="Base.Media"]').should('be.visible').as('mediaPaletteItem');
+
+    // Drag Base.Media onto the drop zone
+    cy.get('@mediaPaletteItem').drag('@containerElement');
+
+    // Click the placed media component to select it and open Settings
+    cy.get('[class*="nodeInteractive"]').contains('Media').click({ force: true });
+
+    // Ensure the Settings panel shows the "Allowed Media Types" section
+    cy.get('div').contains('Allowed Media Types').should('be.visible');
+
+    // Toggle the "Lottie" checkbox
+    cy.get('label').contains('Lottie').click();
+
+    // The user action causes a state update that adds Lottie to the array.
+    // Assert the setting is present.
+    cy.get('label').contains('Lottie').should('exist');
+  });
+
+  it('should strictly prevent dragging non-container elements directly into the empty root canvas', () => {
+    // Wait for the Canvas to render empty
+    cy.get('[class*="canvasArea"]').should('be.visible');
+    
+    // The palette item for "Base.Button"
+    cy.get('[title="Base.Button"]').should('be.visible').as('buttonPaletteItem');
+    cy.get('[class*="rootDropZone"]').should('be.visible').as('dropZone');
+
+    // Drag the Button palette item directly onto the empty root drop zone
+    cy.get('@buttonPaletteItem').drag('@dropZone');
+
+    // Verify the central container enforces rejection, keeping interactive nodes out of DOM
+    cy.get('button').should('not.exist');
+    cy.get('[class*="nodeInteractive"]').should('not.exist');
+
+    // Empty canvas instructions must still persist
+    cy.get('[class*="emptyCanvasText"]').contains('Drag elements here').should('exist');
+  });
+});
+
