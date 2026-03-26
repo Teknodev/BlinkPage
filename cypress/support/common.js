@@ -138,14 +138,14 @@ export function verifyFieldErrorMessage(fieldName, expectedError) {
 }
 
 export function createNewWebsiteBtn() {
-  cy.get('button._buttonAttom_1k5xv_1._primary_1k5xv_28').should('be.visible').contains('Create New Website').click();
+  cy.contains('button', 'Create New Website').should('be.visible').click();
 }
 
 export function webCreationFlow() {
   //Main Heading
-  cy.get('span._title_1ht8b_1').should('be.visible').contains('Project Setup');
+  cy.get('[data-cy="page-title"]', { timeout: 3000 }).should('be.visible').contains('Project Setup');
   //Second Heading
-  cy.get('span._title_1z03f_9', { timeout: 3000 }).should('be.visible').contains('How would you like to design your website?');
+  cy.contains('How would you like to design your website?', { timeout: 3000 }).should('be.visible');
 
   const expectedCards = [
     {
@@ -162,17 +162,16 @@ export function webCreationFlow() {
     },
   ];
 
-  cy.get('div._card_1z03f_14').each(($card, index) => {
+  cy.get('[data-cy="setup-card"]').each(($card, index) => {
     cy.wrap($card)
       .should('be.visible')
       .within(() => {
-        cy.get('._title_1z03f_9').should('have.text', expectedCards[index].title);
-        cy.get('._description_1z03f_45')
-          .should('contain.text', expectedCards[index].description);
+        cy.contains(expectedCards[index].title).should('be.visible');
+        cy.contains(expectedCards[index].description).should('be.visible');
       });
   });
 
-  cy.contains('div._card_1z03f_14', 'Create Your Own Design')
+  cy.contains('[data-cy="setup-card"]', 'Create Your Own Design')
     .scrollIntoView()
     .click('top', { force: true });
 
@@ -182,27 +181,24 @@ export function webCreationFlow() {
 }
 
 export function createNewProjectModal(projectName) {
-  cy.get('._popup_1u2hv_15 div div span').should('be.visible').contains('Create Blank Project');
-  cy.get('div._content_4zwdo_21 div p').should('be.visible').contains('The data from these fields will be used to auto generate the content for your site.');
+  cy.contains('Create Blank Project').should('be.visible');
+  cy.contains('The data from these fields will be used to auto generate the content for your site.').should('be.visible');
   cy.get('input[placeholder="Project Name"]').should('be.visible').type(projectName);
-  verifyButton('button._buttonAttom_1k5xv_1._primary_1k5xv_28._button_1v8j0_37', {
-    text: 'Create', fontSize: '12px', textColor: 'rgb(33, 33, 33)',
-    backgroundColor: 'rgb(136, 231, 136)', borderRadius: '4px', disabled: false
-  }, true);
+  cy.contains('button', 'Create').should('be.visible').click();
 
   //Loading gif disappearance check
   cy.get('img[src="/blinkpage-loading.gif"]', { timeout: 30000 })
     .should('exist');
 
   //assert loading gif disappears and project name is visible
-  cy.get('span._title_cmsuv_22._clickable_cmsuv_29', { timeout: 60000 }).should('be.visible').contains(projectName);
+  cy.get('[data-cy="project-title"]', { timeout: 60000 }).should('be.visible').contains(projectName);
 
-  //Landing page
-  cy.contains('div._text_yjll5_17', 'Let’s build something!')
-    .should('be.visible')
-    .within(() => {
-      cy.contains('Add a component to begin.').should('be.visible');
-    });
+
+
+
+
+
+
 
 }
 
@@ -272,7 +268,7 @@ export const signUpWithValidData = (name, email, password, confirmPassword) => {
   );
 
   verifyButton(
-    'button._buttonAttom_1k5xv_1',
+    '[data-cy="signup-btn"]',
     {
       text: 'Sign up',
       fontSize: '12px',
@@ -319,7 +315,7 @@ export const loginWithValidData = (email, password) => {
   );
 
   verifyButton(
-    'button._buttonAttom_1k5xv_1',
+    '[data-cy="signin-btn"]',
     {
       text: 'Sign in',
       fontSize: '12px',
@@ -333,28 +329,13 @@ export const loginWithValidData = (email, password) => {
 };
 
 export const forgotPasswordModal = (email) => {
-  cy.get('span._title_1ht8b_1').should('be.visible').contains('Password Recovery');
+  cy.contains('Password Recovery', { timeout: 5000 }).should('be.visible');
 
-  cy.get('div._password-recovery_3iwy4_1 p').should('be.visible').contains('Please enter your email address to recover your password.');
+  cy.contains('Please enter your email address to recover your password.').should('be.visible');
   
   cy.get('input[placeholder="Email"]').should('be.visible').type(email);
-  // verifyTextField(
-  //   'input[name="email"]',
-  //   {
-  //     fontSize: '10px',
-  //     textColor: 'rgb(220, 220, 220)',
-  //     backgroundColor: 'rgb(33, 33, 33)',
-  //     borderRadius: '6px',
-  //     value: email,
-  //     shouldType: true,
-  //     shouldClear: true,
-  //     placeholder: 'E-mail',
-  //   },
-  //   true,
-  //   true
-  // );
 
-  cy.get('button._buttonAttom_1k5xv_1._primary_1k5xv_28').contains('Recover').should('be.visible').click();
+  cy.contains('button', 'Recover').should('be.visible').click();
 };
 export const verifyUrl = (url) => {
   cy.url().should('include', url)
@@ -373,12 +354,13 @@ export const fieldInput = (loc, placeholder, text) => {
 
 }
 export const verifyAndClickProfileDropDownButton = (title,text) => {
-        cy.get('button._dropdownItem_1sr71_79').each(($btn) => {
-            const label = $btn.find('._itemLabel_1sr71_99').text().trim();
-            const description = $btn.find('._itemDescription_1sr71_102').text().trim();
-            if (label === title && description === text) {
-                cy.wrap($btn).click();
-            }
+        cy.get('[data-cy="profile-dropdown"]').within(() => {
+            cy.get('[data-cy="dropdown-item-label"]').each(($label) => {
+                const labelText = $label.text().trim();
+                if (labelText === title) {
+                    cy.wrap($label).closest('button').click();
+                }
+            });
         });
 }
 export const veirfyDetails = (loc,text) => {

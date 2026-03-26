@@ -23,3 +23,11 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+/**
+ * Custom command to select elements by data-cy attribute.
+ * Usage: cy.getCy('signin-btn') => cy.get('[data-cy="signin-btn"]')
+ */
+Cypress.Commands.add('getCy', (value, options) => {
+  return cy.get(`[data-cy="${value}"]`, options);
+});

@@ -83,6 +83,12 @@ describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
     // The user action causes a state update that adds Lottie to the array.
     // Assert the setting is present.
     cy.get('label').contains('Lottie').should('exist');
+
+    // Verify CSSGUI renders extended image properties like object-fit in the Design Tab
+    cy.get('div').contains('Design').click({ force: true });
+    cy.get('div').contains('Size').should('be.visible');
+    // We added object-fit to css-properties.tsx explicitly for Media elements
+    cy.get('label').contains('object-fit').should('exist');
   });
 
   it('should strictly prevent dragging non-container elements directly into the empty root canvas', () => {

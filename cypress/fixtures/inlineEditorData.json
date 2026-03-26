@@ -1,0 +1,16 @@
+{
+  "testProjectName": "InlineEditorTestProject",
+  "sampleTitle": "Hello World",
+  "updatedTitle": "Updated Title",
+  "sampleSubtitle": "This is a subtitle",
+  "updatedSubtitle": "Updated Subtitle",
+  "memberName1": "Alice",
+  "memberName2": "Bob",
+  "updatedMemberName": "Robert",
+  "memberBio1": "Developer",
+  "memberBio2": "Designer",
+  "updatedMemberBio": "Lead Designer",
+  "updatedArrayItem1": "Array Item 1 Updated",
+  "updatedArrayItem2": "Array Item 2 Updated",
+  "updatedArrayItem3": "Array Item 3 Updated"
+}

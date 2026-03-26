@@ -1,0 +1,15 @@
+{
+  "testProjectName": "AutomationTestProject",
+  "addLanguage": {
+    "code": "fr",
+    "name": "French"
+  },
+  "secondLanguage": {
+    "code": "de",
+    "name": "German"
+  },
+  "defaultLanguage": {
+    "code": "en",
+    "name": "English"
+  }
+}

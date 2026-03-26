@@ -2,7 +2,7 @@ import { verifyUrl } from "../common"
 
 class ContactUsPage {
     contactusbutton(){
-        cy.get('[class*="_route"]').contains('Contact Us').should('be.visible').click()
+        cy.get('[data-cy="header-nav-contact"]').should('be.visible').click()
     }
     subjectDropDown(){
         cy.get('[class*="_searchInput"]').click()
@@ -13,8 +13,7 @@ class ContactUsPage {
 
     }
     inputMessage(message){
-        cy.get('[class*="_textareaContainer"]')
-        .find('textarea')
+        cy.get('textarea[name="message"]')
         .dblclick({ force: true })
         .clear({ force: true })
         .type(message)
