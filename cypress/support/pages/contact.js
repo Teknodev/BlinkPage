@@ -1,25 +1,29 @@
 import { verifyUrl } from "../common"
 
+/**
+ * Contact Us Page Object
+ * All selectors use data-cy attributes exclusively.
+ */
 class ContactUsPage {
     contactusbutton(){
         cy.get('[data-cy="header-nav-contact"]').should('be.visible').click()
     }
     subjectDropDown(){
-        cy.get('[class*="_searchInput"]').click()
-        cy.get('div[class*="select-portal-dropdown"]').should('be.visible')
+        cy.get('[data-cy="subject-search-input"]').click()
+        cy.get('[data-cy="subject-dropdown"]').should('be.visible')
     }
     submitButton(){
         cy.contains('button', 'Submit').should('be.visible').click()
 
     }
     inputMessage(message){
-        cy.get('textarea[name="message"]')
+        cy.get('[data-cy="contact-message"]')
         .dblclick({ force: true })
         .clear({ force: true })
         .type(message)
     }
     selectDropdownOption = (optionText) => {
-    cy.get('div[class*="select-portal-dropdown"]')
+    cy.get('[data-cy="subject-dropdown"]')
     .contains('[role="option"]', optionText)  // find child with role=option and matching text
     .scrollIntoView()                        // optional: scroll if dropdown is scrollable
     .click();
@@ -59,7 +63,7 @@ class ContactUsPage {
     })
 
     // Type malicious script
-    cy.get('textarea[name="message"]')
+    cy.get('[data-cy="contact-message"]')
     .clear()
     .type('<script>alert(1)</script>')
 

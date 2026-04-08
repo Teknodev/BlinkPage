@@ -54,7 +54,7 @@ describe('Enter the application as a guest user', () => {
 
         loginWithValidData('shahbahram97@gmail.com', 'BlinkPage7424');
 
-        cy.get('div._content_1o9vm_1')
+        cy.get('[data-cy="empty-projects-message"]')
             .should('be.visible')
             .and('contain.text', "You don't have any website yet");
 

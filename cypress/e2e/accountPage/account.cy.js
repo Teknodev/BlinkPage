@@ -47,24 +47,24 @@ describe('My Account', () => {
         myAccountPage.verifyDeletebutton();
         myAccountPage.verifySuccessMessage;
 
-        veirfyDetails('[class*="_cardTitle_aynuf"]','My Profile');
+        veirfyDetails('[data-cy="card-title"]','My Profile');
 
         // Verify Name
-        veirfyDetails('[class*="_userName_aynuf"]',data.name);
+        veirfyDetails('[data-cy="user-name"]',data.name);
 
         // Verify email 
-        veirfyDetails('[class*="_userEmail_aynuf"]', data.email);
+        veirfyDetails('[data-cy="user-email"]', data.email);
 
         // Personal Information
-        veirfyDetails('[class*="_cardTitle_aynuf"]','Personal Information');
+        veirfyDetails('[data-cy="card-title"]','Personal Information');
 
-        veirfyDetails('[class*="_fieldLabel_aynuf"]','Name');
-        verifyInputValue('[class*="_input_1i94w_1 undefined"]',data.name);
-        veirfyDetails('[class*="_fieldLabel_aynuf"]','Phone Number');
+        veirfyDetails('[data-cy="field-label"]','Name');
+        verifyInputValue('[data-cy="account-input"]',data.name);
+        veirfyDetails('[data-cy="field-label"]','Phone Number');
         verifyInputValue('[placeholder="Enter phone number"]',data.phone);
 
-        veirfyDetails('[class*="_fieldLabel_aynuf"]','Country');
-        veirfyDetails('[class*="_fieldLabel_aynuf"]','Date of Birth');
+        veirfyDetails('[data-cy="field-label"]','Country');
+        veirfyDetails('[data-cy="field-label"]','Date of Birth');
 
     });
     it('Upload valid PNG image', () => {
@@ -157,13 +157,13 @@ describe('My Account', () => {
         // updating the name
         myAccountPage.verifyMyAccountPage("Account");
         myAccountPage.verifyButton('Edit');
-        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', 'Shah',)
+        myAccountPage.editField('[data-cy="account-input"]', 'Shah',)
         myAccountPage.verifyButton('Save')
         myAccountPage.verifySuccessMessage('Profile updated successfully!')
         
         // again changing to previous one 
         myAccountPage.verifyButton('Edit');
-        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', data.name,)
+        myAccountPage.editField('[data-cy="account-input"]', data.name,)
         myAccountPage.verifyButton('Save');   
         myAccountPage.verifySuccessMessage('Profile updated successfully!');
 
@@ -173,7 +173,7 @@ describe('My Account', () => {
         // updating the name
         myAccountPage.verifyMyAccountPage("Account");
         myAccountPage.verifyButton('Edit');
-        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', ' ',)
+        myAccountPage.editField('[data-cy="account-input"]', ' ',)
         myAccountPage.verifyDisableButton('Save')
         
 
@@ -183,13 +183,13 @@ describe('My Account', () => {
         // updating the name
         myAccountPage.verifyMyAccountPage("Account");
         myAccountPage.verifyButton('Edit');
-        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', '466373',)
+        myAccountPage.editField('[data-cy="account-input"]', '466373',)
         myAccountPage.verifyButton('Save')
         myAccountPage.verifySuccessMessage('Profile updated successfully!')
 
         // again changing to previous one 
         myAccountPage.verifyButton('Edit');
-        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', data.name,)
+        myAccountPage.editField('[data-cy="account-input"]', data.name,)
         myAccountPage.verifyButton('Save');   
 
     });
@@ -198,13 +198,13 @@ describe('My Account', () => {
         // updating the name
         myAccountPage.verifyMyAccountPage("Account");
         myAccountPage.verifyButton('Edit');
-        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', '1234567890',1)
+        myAccountPage.editField('[data-cy="account-input"]', '1234567890',1)
         myAccountPage.verifyButton('Save')
         myAccountPage.verifySuccessMessage('Profile updated successfully!');
 
         // again changing to previous one 
         myAccountPage.verifyButton('Edit');
-        myAccountPage.editField('[class*="_input_1i94w_1 undefined"]', data.phone,1)
+        myAccountPage.editField('[data-cy="account-input"]', data.phone,1)
         myAccountPage.verifyButton('Save');   
         myAccountPage.verifySuccessMessage('Profile updated successfully!');
 
@@ -214,7 +214,7 @@ describe('My Account', () => {
         // updating the phone number with alphabets
         myAccountPage.verifyMyAccountPage("Account");
         myAccountPage.verifyButton('Edit');
-        cy.get('[class*="_input_1i94w_1 undefined"]').eq(1).type('abcde').should('have.value', '');
+        cy.get('[data-cy="account-input"]').eq(1).type('abcde').should('have.value', '');
 
 
     });
@@ -223,7 +223,7 @@ describe('My Account', () => {
         // updating the phone number with alphabets
         myAccountPage.verifyMyAccountPage("Account");
         myAccountPage.verifyButton('Edit');
-        cy.get('[class*="_input_1i94w_1 undefined"]').eq(1).type('@#$@').should('have.value', '');
+        cy.get('[data-cy="account-input"]').eq(1).type('@#$@').should('have.value', '');
 
     });
     it('Verify the user can select the country from the dropdown', () => {
@@ -266,32 +266,32 @@ describe('My Account', () => {
         
         //select the state
         myAccountPage.verifyMyAccountPage("Account");
-        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
-        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Email')
+        veirfyDetails('[data-cy="card-title"]','Login Information');
+        veirfyDetails('[data-cy="field-label"]','Email')
         cy.wait(9000)
         myAccountPage.verifyEmailisVerified(data.email);
 
 
 
-        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
-        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••')
+        veirfyDetails('[data-cy="field-label"]','Password')
+        veirfyDetails('[data-cy="password-display"] span', '••••••••')
     });
     it('Verify change password button is visible and clickable.', () => {
         
         //select the state
         myAccountPage.verifyMyAccountPage("Account");
-        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
-        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
-        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••');
+        veirfyDetails('[data-cy="card-title"]','Login Information');
+        veirfyDetails('[data-cy="field-label"]','Password')
+        veirfyDetails('[data-cy="password-display"] span', '••••••••');
         myAccountPage.verifyButton('Change password')
 
     });
     it('Verify Clicking the change password button opens Reset Password modal.', () => {
         //select the state
         myAccountPage.verifyMyAccountPage("Account");
-        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
-        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
-        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••');
+        veirfyDetails('[data-cy="card-title"]','Login Information');
+        veirfyDetails('[data-cy="field-label"]','Password')
+        veirfyDetails('[data-cy="password-display"] span', '••••••••');
         myAccountPage.verifyButton('Change password');
         myAccountPage.verfyResetPasswordModal();
         myAccountPage.verifyButton('Send reset email');
@@ -300,20 +300,20 @@ describe('My Account', () => {
     it('Verify Close modal using X icon', () => {
         //select the state
         myAccountPage.verifyMyAccountPage("Account");
-        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
-        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
-        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••');
+        veirfyDetails('[data-cy="card-title"]','Login Information');
+        veirfyDetails('[data-cy="field-label"]','Password')
+        veirfyDetails('[data-cy="password-display"] span', '••••••••');
         myAccountPage.verifyButton('Change password');
-        cy.get('[class="_button_ivllp_1"]').eq(1).should('be.visible').click();
-        cy.get('[class="_container_njae3_16 undefined"]').should('not.exist');
+        cy.get('[data-cy="modal-close-btn"]').eq(1).should('be.visible').click();
+        cy.get('[data-cy="reset-password-modal"]').should('not.exist');
 
     });
     it('Verify Logout successfully', () => {
         //select the state
         myAccountPage.verifyMyAccountPage("Account");
-        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
-        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
-        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••');
+        veirfyDetails('[data-cy="card-title"]','Login Information');
+        veirfyDetails('[data-cy="field-label"]','Password')
+        veirfyDetails('[data-cy="password-display"] span', '••••••••');
         myAccountPage.verifyButton('Logout');
         verifyUrl('/authentication');
     
@@ -321,9 +321,9 @@ describe('My Account', () => {
     it('Verify delete button and modal', () => {
         //select the state
         myAccountPage.verifyMyAccountPage("Account");
-        veirfyDetails('[class*="_cardTitle_aynuf"]','Login Information');
-        veirfyDetails('[class="_fieldLabel_aynuf_208"]','Password')
-        veirfyDetails('[class="_passwordDisplay_aynuf_245"] span', '••••••••');
+        veirfyDetails('[data-cy="card-title"]','Login Information');
+        veirfyDetails('[data-cy="field-label"]','Password')
+        veirfyDetails('[data-cy="password-display"] span', '••••••••');
         myAccountPage.verifyButton('Delete account');
         myAccountPage.verifyDeleteAccountModal();
         myAccountPage.verifyButton('Cancel')

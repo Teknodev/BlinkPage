@@ -4,7 +4,7 @@ class MyAccountPage {
         cy.contains(label, { timeout: 8000 }).should('be.visible');
     }
     verifySuccessMessage(message){
-        cy.get('[role="alert"].Toastify__toast--success', { timeout: 10000 })
+        cy.get('[data-cy="toast-success"]', { timeout: 10000 })
         .should('be.visible')
         .and('contain.text', message);
     }
@@ -28,7 +28,7 @@ class MyAccountPage {
     }
     verifyUploadedImage() {
 
-        cy.get('img[alt="Profile"]', { timeout: 10000 })
+        cy.get('[data-cy="profile-image"]', { timeout: 10000 })
             .should('be.visible')
         .then(($img) => {
         const src = $img.attr('src');
@@ -45,7 +45,7 @@ class MyAccountPage {
         cy.reload();
 
     // After reload, check again
-        cy.get('img[alt="Profile"]', { timeout: 15000 })
+        cy.get('[data-cy="profile-image"]', { timeout: 15000 })
         .should('be.visible')
         .then(($img) => {
         const src = $img.attr('src');
@@ -70,19 +70,19 @@ class MyAccountPage {
         cy.contains('button', text).should('be.disabled');
     }
     verifySelectCountry(state){
-        cy.get('[class*="_searchInput"]').should('be.visible').click();
-        cy.get('[class*="select-portal-dropdown"]').should('be.visible');
+        cy.get('[data-cy="country-search-input"]').should('be.visible').click();
+        cy.get('[data-cy="country-dropdown"]').should('be.visible');
         cy.contains(state).should('be.visible').click();
     }
     verifyDeselectState(){
-        cy.get('[class*="_button_ivllp"]').should('be.visible').click({force:true});
+        cy.get('[data-cy="deselect-country-btn"]').should('be.visible').click({force:true});
     }
     verifyCountryDropDownData(state){
-        cy.get('[class*="_searchInput"]').should('be.visible').click();
-        cy.get('[class*="select-portal-dropdown"]').should('be.visible');
+        cy.get('[data-cy="country-search-input"]').should('be.visible').click();
+        cy.get('[data-cy="country-dropdown"]').should('be.visible');
     }
     verifyDropDownOptions(){
-        cy.get('[class*="select-portal-dropdown"]').find('[class*="_dropdownItem"]')
+        cy.get('[data-cy="country-dropdown"]').find('[data-cy="country-dropdown-item"]')
       .each(($option, index) => {
         const stateText = $option.text().trim();
         cy.wrap($option).should('have.text', stateText);
@@ -90,8 +90,8 @@ class MyAccountPage {
     }
     // Open the date picker
     openDatePicker() {
-        cy.get('.react-datepicker-wrapper input').click();
-        cy.get('[class="react-datepicker__month-container"]').should('be.visible');
+        cy.get('[data-cy="dob-input"]').click();
+        cy.get('[data-cy="datepicker-calendar"]').should('be.visible');
     }
     selectDate(day) {
         const formattedDay = day < 10 ? `${day}` : day;
@@ -108,10 +108,10 @@ class MyAccountPage {
 
         this.openDatePicker();
 
-        cy.get('select').eq(0)
+        cy.get('[data-cy="datepicker-month-select"]')
             .select(pastMonth.toString());
 
-        cy.get('select').eq(1)
+        cy.get('[data-cy="datepicker-year-select"]')
             .select(pastYear.toString());
 
         cy.get('body').click()
@@ -137,11 +137,11 @@ class MyAccountPage {
         const todayYear = today.getFullYear();
 
         this.openDatePicker();
-        cy.get('.react-datepicker__day--today').click();
+        cy.get('[data-cy="datepicker-today"]').click();
     }
     verifyEmailisVerified(text){
         cy.contains(text).should('be.visible').within(() => {
-                cy.get('[data-testid="CheckCircleIcon"]')
+                cy.get('[data-cy="email-verified-icon"]')
                   .should('exist')
                   .and('be.visible');
                 });

@@ -130,7 +130,7 @@ export function verifyButton(selector, expected = {}, shouldClick = false) {
 }
 
 export function verifyFieldErrorMessage(fieldName, expectedError) {
-  cy.get(`input[name="${fieldName}"]`)
+  cy.get(`[data-cy="input-${fieldName}"]`)
     .parent()
     .find('span')
     .should('be.visible')
@@ -183,11 +183,11 @@ export function webCreationFlow() {
 export function createNewProjectModal(projectName) {
   cy.contains('Create Blank Project').should('be.visible');
   cy.contains('The data from these fields will be used to auto generate the content for your site.').should('be.visible');
-  cy.get('input[placeholder="Project Name"]').should('be.visible').type(projectName);
+  cy.get('[data-cy="input-project-name"]').should('be.visible').type(projectName);
   cy.contains('button', 'Create').should('be.visible').click();
 
   //Loading gif disappearance check
-  cy.get('img[src="/blinkpage-loading.gif"]', { timeout: 30000 })
+  cy.get('[data-cy="loading-gif"]', { timeout: 30000 })
     .should('exist');
 
   //assert loading gif disappears and project name is visible
@@ -204,7 +204,7 @@ export function createNewProjectModal(projectName) {
 
 export const signUpWithValidData = (name, email, password, confirmPassword) => {
   verifyTextField(
-    'input[name="name"]',
+    '[data-cy="input-name"]',
     {
       fontSize: '10px',
       textColor: 'rgb(220, 220, 220)',
@@ -220,7 +220,7 @@ export const signUpWithValidData = (name, email, password, confirmPassword) => {
   );
 
   verifyTextField(
-    'input[name="email"]',
+    '[data-cy="input-email"]',
     {
       fontSize: '10px',
       textColor: 'rgb(220, 220, 220)',
@@ -236,7 +236,7 @@ export const signUpWithValidData = (name, email, password, confirmPassword) => {
   );
 
   verifyTextField(
-    'input[placeholder="Password"]',
+    '[data-cy="password-input"]',
     {
       fontSize: '10px',
       textColor: 'rgb(220, 220, 220)',
@@ -252,7 +252,7 @@ export const signUpWithValidData = (name, email, password, confirmPassword) => {
   );
 
   verifyTextField(
-    'input[placeholder="Confirm Password"]',
+    '[data-cy="input-confirm-password"]',
     {
       fontSize: '10px',
       textColor: 'rgb(220, 220, 220)',
@@ -283,7 +283,7 @@ export const signUpWithValidData = (name, email, password, confirmPassword) => {
 
 export const loginWithValidData = (email, password) => {
   verifyTextField(
-    'input[name="email"]',
+    '[data-cy="input-email"]',
     {
       fontSize: '10px',
       textColor: 'rgb(220, 220, 220)',
@@ -299,7 +299,7 @@ export const loginWithValidData = (email, password) => {
   );
 
   verifyTextField(
-    'input[placeholder="Password"]',
+    '[data-cy="password-input"]',
     {
       fontSize: '10px',
       textColor: 'rgb(220, 220, 220)',
@@ -333,7 +333,7 @@ export const forgotPasswordModal = (email) => {
 
   cy.contains('Please enter your email address to recover your password.').should('be.visible');
   
-  cy.get('input[placeholder="Email"]').should('be.visible').type(email);
+  cy.get('[data-cy="input-forgot-email"]').should('be.visible').type(email);
 
   cy.contains('button', 'Recover').should('be.visible').click();
 };
@@ -378,7 +378,7 @@ export const uploadProfileImage = (locator, fileName) => {
     .selectFile(`cypress/fixtures/${fileName}`, { force: true });
 };
 export const verifySuccessToast = (message) => {
-  cy.get('[role="alert"].Toastify__toast--success', { timeout: 10000 })
+  cy.get('[data-cy="toast-success"]', { timeout: 10000 })
     .should('be.visible')
     .and('contain.text', message);
 };

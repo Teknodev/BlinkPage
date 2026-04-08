@@ -18,7 +18,7 @@ describe('Candidate Registration & Apply', () => {
 
     //Email field visibility and type check
     verifyTextField(
-      'input[name="email"]',
+      '[data-cy="input-email"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -35,7 +35,7 @@ describe('Candidate Registration & Apply', () => {
 
     //Email field visibility and type check
     verifyTextField(
-      'input[type="password"]',
+      '[data-cy="password-input"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -68,7 +68,7 @@ describe('Candidate Registration & Apply', () => {
 
     //Email field visibility and type check
     verifyTextField(
-      'input[name="email"]',
+      '[data-cy="input-email"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -85,7 +85,7 @@ describe('Candidate Registration & Apply', () => {
 
     //Email field visibility and type check
     verifyTextField(
-      'input[type="password"]',
+      '[data-cy="password-input"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -118,7 +118,7 @@ describe('Candidate Registration & Apply', () => {
 
     //Email field visibility and type check
     verifyTextField(
-      'input[name="email"]',
+      '[data-cy="input-email"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -136,11 +136,11 @@ describe('Candidate Registration & Apply', () => {
     loginPage.signInButton();
 
     //Email field error message
-    loginPage.requiredErrorMessage('input[name="email"]', 'Required');
+    loginPage.requiredErrorMessage('[data-cy="input-email"]', 'Required');
 
     //Email field visibility and type check
     verifyTextField(
-      'input[type="password"]',
+      '[data-cy="password-input"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -156,7 +156,7 @@ describe('Candidate Registration & Apply', () => {
     );
 
     //Password field error message
-    loginPage.requiredErrorMessage('input[name="password"]', 'Password must contain at least one uppercase letter, one number, and be at least 5 characters long. Only letters and numbers are allowed.');
+    loginPage.requiredErrorMessage('[data-cy="password-input"]', 'Password must contain at least one uppercase letter, one number, and be at least 5 characters long. Only letters and numbers are allowed.');
 
     loginPage.clickEyeIcon();
 
@@ -173,7 +173,7 @@ describe('Candidate Registration & Apply', () => {
 
     //Email field visibility and type check
     verifyTextField(
-      'input[name="email"]',
+      '[data-cy="input-email"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -191,11 +191,11 @@ describe('Candidate Registration & Apply', () => {
     loginPage.signInButton();
 
     //Email field error message
-    loginPage.requiredErrorMessage('input[name="email"]', 'Invalid email');
+    loginPage.requiredErrorMessage('[data-cy="input-email"]', 'Invalid email');
 
     //Password must be at least 5 characters long.
     verifyTextField(
-      'input[type="password"]',
+      '[data-cy="password-input"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -211,11 +211,11 @@ describe('Candidate Registration & Apply', () => {
     );
 
     //Password field error message
-    loginPage.requiredErrorMessage('input[name="password"]', 'Password must be at least 5 characters long.');
+    loginPage.requiredErrorMessage('[data-cy="password-input"]', 'Password must be at least 5 characters long.');
 
     //Password must contain at least one uppercase letter.
     verifyTextField(
-      'input[type="password"]',
+      '[data-cy="password-input"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -231,12 +231,12 @@ describe('Candidate Registration & Apply', () => {
     );
 
     //Password field error message
-    loginPage.requiredErrorMessage('input[name="password"]', 'Password must contain at least one uppercase letter.');
+    loginPage.requiredErrorMessage('[data-cy="password-input"]', 'Password must contain at least one uppercase letter.');
 
 
     //Password can only contain letters and numbers.
     verifyTextField(
-      'input[type="password"]',
+      '[data-cy="password-input"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -252,7 +252,7 @@ describe('Candidate Registration & Apply', () => {
     );
 
     //Password field error message
-    loginPage.requiredErrorMessage('input[name="password"]', 'Password can only contain letters and numbers.');
+    loginPage.requiredErrorMessage('[data-cy="password-input"]', 'Password can only contain letters and numbers.');
 
 
 
@@ -279,7 +279,7 @@ describe('Candidate Registration & Apply', () => {
 
     //Email field visibility and type check
     verifyTextField(
-      'input[name="email"]',
+      '[data-cy="input-email"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -296,7 +296,7 @@ describe('Candidate Registration & Apply', () => {
 
     //Email field visibility and type check
     verifyTextField(
-      'input[type="password"]',
+      '[data-cy="password-input"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -334,7 +334,7 @@ describe('Candidate Registration & Apply', () => {
 
     //Email field visibility and type check
     verifyTextField(
-      'input[name="email"]',
+      '[data-cy="input-email"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -351,7 +351,7 @@ describe('Candidate Registration & Apply', () => {
 
     //First attempt with wrong password
     verifyTextField(
-      'input[type="password"]',
+      '[data-cy="password-input"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -372,7 +372,7 @@ describe('Candidate Registration & Apply', () => {
 
     loginPage.verifyToastMessage('Identifier or password was incorrect.');
 
-    cy.get('button.Toastify__close-button').should('be.visible').click();
+    cy.get('[data-cy="toast-close-btn"]').should('be.visible').click();
 
     cy.wait(5000);
 
@@ -381,7 +381,7 @@ describe('Candidate Registration & Apply', () => {
 
     loginPage.verifyToastMessage('Identifier or password was incorrect.');
 
-    cy.get('button.Toastify__close-button').should('be.visible').click();
+    cy.get('[data-cy="toast-close-btn"]').should('be.visible').click();
 
     cy.wait(5000);
 
@@ -390,7 +390,7 @@ describe('Candidate Registration & Apply', () => {
 
     loginPage.verifyToastMessage('Identifier or password was incorrect.');
 
-    cy.get('button.Toastify__close-button').should('be.visible').click();
+    cy.get('[data-cy="toast-close-btn"]').should('be.visible').click();
 
   });
 
@@ -410,7 +410,7 @@ describe('Candidate Registration & Apply', () => {
 
     //Email field visibility and type check
     verifyTextField(
-      'input[name="email"]',
+      '[data-cy="input-email"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 
@@ -427,7 +427,7 @@ describe('Candidate Registration & Apply', () => {
 
     //Email field visibility and type check
     verifyTextField(
-      'input[type="password"]',
+      '[data-cy="password-input"]',
       {
         fontSize: "10px", 
         textColor: "rgb(220, 220, 220)", 

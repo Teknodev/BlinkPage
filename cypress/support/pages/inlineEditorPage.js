@@ -8,15 +8,15 @@ class InlineEditorPage {
   // ── Selectors ─────────────────────────────────────────────────────
 
   get blinkpageTags() {
-    return cy.get('blinkpage');
+    return cy.get('[data-cy="blinkpage-tag"]');
   }
 
   getBlinkpageById(id) {
-    return cy.get(`blinkpage#${id}`);
+    return cy.get(`[data-cy="blinkpage-tag"]#${id}`);
   }
 
   get activeEditor() {
-    return cy.get('[contenteditable="true"]');
+    return cy.get('[data-cy="lexical-editor"]');
   }
 
   get toolbar() {
@@ -135,7 +135,7 @@ class InlineEditorPage {
    * Verify that no Lexical editor is visible (inactive).
    */
   verifyEditorIsInactive() {
-    cy.get('[contenteditable="true"]').should('not.exist');
+    cy.get('[data-cy="lexical-editor"]').should('not.exist');
   }
 
   /**
@@ -167,7 +167,7 @@ class InlineEditorPage {
    * @param {number} componentIndex - data-component-index value
    */
   getBlinkpageTagsInComponent(componentIndex) {
-    return cy.get(`[data-component-index="${componentIndex}"] blinkpage`);
+    return cy.get(`[data-component-index="${componentIndex}"] [data-cy="blinkpage-tag"]`);
   }
 
   /**

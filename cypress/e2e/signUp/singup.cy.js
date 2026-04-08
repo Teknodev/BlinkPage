@@ -24,7 +24,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Name field visibility and type check
         verifyTextField(
-            'input[name="name"]',
+            '[data-cy="input-name"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)",
@@ -41,7 +41,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -58,7 +58,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -77,7 +77,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Confirm Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Confirm Password"]',
+            '[data-cy="input-confirm-password"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -95,7 +95,7 @@ describe('Candidate Registration & SignUp', () => {
         // loginPage.clickEyeIcon();
 
         //Sing Up button
-        verifyButton('button._buttonAttom_1k5xv_1', {
+        verifyButton('[data-cy="signup-btn"]', {
             text: 'Sign up', 
             fontSize: '12px', 
             textColor: 'rgb(33, 33, 33)',
@@ -121,7 +121,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Name field visibility and type check
         verifyTextField(
-            'input[name="name"]',
+            '[data-cy="input-name"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -138,7 +138,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -155,7 +155,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -174,7 +174,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Confirm Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Confirm Password"]',
+            '[data-cy="input-confirm-password"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -192,7 +192,7 @@ describe('Candidate Registration & SignUp', () => {
         // loginPage.clickEyeIcon();
 
         //Sing Up button
-        verifyButton('button._buttonAttom_1k5xv_1', {
+        verifyButton('[data-cy="signup-btn"]', {
             text: 'Sign up', 
             fontSize: '12px', 
             textColor: 'rgb(33, 33, 33)',
@@ -218,7 +218,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Name field visibility and type check
         verifyTextField(
-            'input[name="name"]',
+            '[data-cy="input-name"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -235,7 +235,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -252,7 +252,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -270,7 +270,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Confirm Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Confirm Password"]',
+            '[data-cy="input-confirm-password"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -288,7 +288,7 @@ describe('Candidate Registration & SignUp', () => {
         // loginPage.clickEyeIcon();
 
         //Sing Up button
-        verifyButton('button._buttonAttom_1k5xv_1', {
+        verifyButton('[data-cy="signup-btn"]', {
             text: 'Sign up', 
             fontSize: '12px', 
             textColor: 'rgb(33, 33, 33)',
@@ -297,7 +297,7 @@ describe('Candidate Registration & SignUp', () => {
             disabled: false
         }, true);
 
-        loginPage.requiredErrorMessage('input[placeholder="Name"]', 'Required');
+        loginPage.requiredErrorMessage('[data-cy="input-name"]', 'Required');
         verifyFieldErrorMessage('email', 'Required');
         verifyFieldErrorMessage('password', 'Password must contain at least one uppercase letter, one number, and be at least 5 characters long. Only letters and numbers are allowed.')
         verifyFieldErrorMessage('confirmPassword', 'Confirm Password is required.')
@@ -315,7 +315,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Name field visibility and type check
         verifyTextField(
-            'input[name="name"]',
+            '[data-cy="input-name"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -332,7 +332,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -349,7 +349,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -368,7 +368,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Confirm Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Confirm Password"]',
+            '[data-cy="input-confirm-password"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -386,7 +386,7 @@ describe('Candidate Registration & SignUp', () => {
         // loginPage.clickEyeIcon();
 
         //Sing Up button
-        verifyButton('button._buttonAttom_1k5xv_1', {
+        verifyButton('[data-cy="signup-btn"]', {
             text: 'Sign up', 
             fontSize: '12px', 
             textColor: 'rgb(33, 33, 33)',
@@ -411,7 +411,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Name field visibility and type check
         verifyTextField(
-            'input[name="name"]',
+            '[data-cy="input-name"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -428,7 +428,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -445,7 +445,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -464,7 +464,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Confirm Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Confirm Password"]',
+            '[data-cy="input-confirm-password"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -482,7 +482,7 @@ describe('Candidate Registration & SignUp', () => {
         // loginPage.clickEyeIcon();
 
         //Sing Up button
-        verifyButton('button._buttonAttom_1k5xv_1', {
+        verifyButton('[data-cy="signup-btn"]', {
             text: 'Sign up', 
             fontSize: '12px', 
             textColor: 'rgb(33, 33, 33)',
@@ -490,7 +490,7 @@ describe('Candidate Registration & SignUp', () => {
             borderRadius: '6px', 
             disabled: false
         }, true);
-        loginPage.requiredErrorMessage('input[placeholder="E-mail"]', 'Required')
+        loginPage.requiredErrorMessage('[data-cy="input-email"]', 'Required')
     });
     it('Sign up with empty password fields', () => {
 
@@ -505,7 +505,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Name field visibility and type check
         verifyTextField(
-            'input[name="name"]',
+            '[data-cy="input-name"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -522,7 +522,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -539,7 +539,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -558,7 +558,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Confirm Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Confirm Password"]',
+            '[data-cy="input-confirm-password"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -574,7 +574,7 @@ describe('Candidate Registration & SignUp', () => {
         // loginPage.clickEyeIcon();
 
         //Sing Up button
-        verifyButton('button._buttonAttom_1k5xv_1', {
+        verifyButton('[data-cy="signup-btn"]', {
             text: 'Sign up', 
             fontSize: '12px', 
             textColor: 'rgb(33, 33, 33)',
@@ -605,7 +605,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Name field visibility and type check
         verifyTextField(
-            'input[name="name"]',
+            '[data-cy="input-name"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -622,7 +622,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -639,7 +639,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -658,7 +658,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Confirm Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Confirm Password"]',
+            '[data-cy="input-confirm-password"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -674,7 +674,7 @@ describe('Candidate Registration & SignUp', () => {
         );
 
         //Sing Up button
-        verifyButton('button._buttonAttom_1k5xv_1', {
+        verifyButton('[data-cy="signup-btn"]', {
             text: 'Sign up', 
             fontSize: '12px', 
             textColor: 'rgb(33, 33, 33)',
@@ -685,7 +685,7 @@ describe('Candidate Registration & SignUp', () => {
 
         cy.wait(1000)
 
-        loginPage.requiredErrorMessage('input[placeholder="Confirm Password"]', 'Passwords must match.')
+        loginPage.requiredErrorMessage('[data-cy="input-confirm-password"]', 'Passwords must match.')
 
         // loginPage.verifyToastMessage();
     });
@@ -702,7 +702,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Name field visibility and type check
         verifyTextField(
-            'input[name="name"]',
+            '[data-cy="input-name"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -719,7 +719,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -736,7 +736,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -755,7 +755,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Confirm Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Confirm Password"]',
+            '[data-cy="input-confirm-password"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -773,7 +773,7 @@ describe('Candidate Registration & SignUp', () => {
         // loginPage.clickEyeIcon();
 
         //Sing Up button
-        verifyButton('button._buttonAttom_1k5xv_1', {
+        verifyButton('[data-cy="signup-btn"]', {
             text: 'Sign up', 
             fontSize: '12px', 
             textColor: 'rgb(33, 33, 33)',
@@ -798,7 +798,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Name field visibility and type check
         verifyTextField(
-            'input[name="name"]',
+            '[data-cy="input-name"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "Shahbahram", shouldType: true, shouldClear: true, placeholder: "Name"
@@ -809,7 +809,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 
@@ -826,7 +826,7 @@ describe('Candidate Registration & SignUp', () => {
 
         //Password field visibility and type check
         verifyTextField(
-            'input[placeholder="Password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", 
                 textColor: "rgb(220, 220, 220)", 

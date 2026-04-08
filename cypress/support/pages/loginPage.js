@@ -36,7 +36,7 @@ class LoginPage {
     clickProfileIcon() {
         cy.get('[data-cy="profile-button"]', { timeout: 20000 }).should('be.visible').click();
         //Verify Logo
-        cy.get('img[alt="Logo"]').should('be.visible');
+        cy.get('[data-cy="auth-logo"]').should('be.visible');
     }
 
     clickEyeIcon(index=0) {
@@ -50,7 +50,7 @@ class LoginPage {
     }
 
     verifyToastMessage(toastMessage) {
-        cy.get('div.Toastify__toast.Toastify__toast', { timeout: 6000 }).should('be.visible');
+        cy.get('[data-cy="toast-message"]', { timeout: 6000 }).should('be.visible');
         cy.contains(toastMessage).should('be.visible')
     }
 

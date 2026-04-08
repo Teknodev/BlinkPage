@@ -21,13 +21,13 @@ describe('A/B Testing — Flow Builder', () => {
     });
 
     it('should display at least one variant node (primary)', () => {
-      cy.get('.react-flow__node-variantNode', { timeout: 5000 })
+      cy.get('[data-cy="ab-variant-node"]', { timeout: 5000 })
         .should('exist')
         .and('have.length.gte', 1);
     });
 
     it('should have edges connecting page to variants', () => {
-      cy.get('.react-flow__edge', { timeout: 5000 })
+      cy.get('[data-cy="ab-flow-canvas"]').find('.react-flow__edge', { timeout: 5000 })
         .should('exist')
         .and('have.length.gte', 1);
     });
@@ -38,7 +38,7 @@ describe('A/B Testing — Flow Builder', () => {
   describe('Variant Management', () => {
     it('should create a new variant and display it in the flow', () => {
       // Count initial variants
-      cy.get('.react-flow__node-variantNode').then(($nodes) => {
+      cy.get('[data-cy="ab-variant-node"]').then(($nodes) => {
         const initialCount = $nodes.length;
 
         abTestingPage.createVariant();
@@ -58,12 +58,12 @@ describe('A/B Testing — Flow Builder', () => {
   describe('Page to Variant Connection', () => {
     it('should display percentage on page-to-variant edges', () => {
       // The edge labels show traffic percentage
-      cy.get('.react-flow__edge', { timeout: 5000 })
+      cy.get('[data-cy="ab-flow-canvas"]').find('.react-flow__edge', { timeout: 5000 })
         .first()
         .should('exist');
 
       // Percentage labels should be visible on edges
-      cy.get('.react-flow__edgelabel', { timeout: 5000 })
+      cy.get('[data-cy="ab-flow-canvas"]').find('.react-flow__edgelabel', { timeout: 5000 })
         .should('exist')
         .and('have.length.gte', 1);
     });
@@ -96,7 +96,7 @@ describe('A/B Testing — Flow Builder', () => {
       abTestingPage.verifyFlowBuilderVisible();
 
       // The created variant should still be there
-      cy.get('.react-flow__node-variantNode', { timeout: 5000 })
+      cy.get('[data-cy="ab-variant-node"]', { timeout: 5000 })
         .should('have.length.gte', 2); // Primary + at least the one we created
     });
   });
@@ -108,14 +108,14 @@ describe('A/B Testing — Flow Builder', () => {
       abTestingPage.clickVariantNode('Variant 1');
 
       // Selected variant node should have a visual indicator
-      cy.get('.react-flow__node-variantNode.selected', { timeout: 3000 })
+      cy.get('[data-cy="ab-variant-node"]').filter('.selected, [class*="selectedNode"]', { timeout: 3000 })
         .should('exist');
     });
 
     it('should allow selecting the page node by clicking', () => {
       abTestingPage.clickPageNode();
 
-      cy.get('.react-flow__node-pageNode.selected', { timeout: 3000 })
+      cy.get('[data-cy="ab-page-node"]').filter('.selected, [class*="selectedNode"]', { timeout: 3000 })
         .should('exist');
     });
   });

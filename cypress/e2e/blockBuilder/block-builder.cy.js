@@ -12,28 +12,28 @@ describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
 
   it('should successfully drag an element from palette and drop it, creating a space', () => {
     // Wait for the Canvas and Elements Palette to render
-    cy.get('[class*="canvasArea"]').should('be.visible');
+    cy.get('[data-cy="bb-canvas-area"]').should('be.visible');
     
     // Drag Base.Container first to establish a valid root element
-    cy.get('[title="Base.Container"]').should('be.visible').as('containerPaletteItem');
-    cy.get('[class*="rootDropZone"]').should('be.visible').as('dropZone');
+    cy.get('[data-cy="palette-item-Base.Container"]').should('be.visible').as('containerPaletteItem');
+    cy.get('[data-cy="bb-root-drop-zone"]').should('be.visible').as('dropZone');
     cy.get('@containerPaletteItem').drag('@dropZone');
 
     // Wait for the container to render in the canvas, and use it as the new drop zone
-    cy.get('div[class*="container"]').first().should('exist').as('containerElement');
+    cy.get('[data-cy="bb-rendered-container"]').first().should('exist').as('containerElement');
 
     // The palette item for "Base.Button"
-    cy.get('[title="Base.Button"]').should('be.visible').as('buttonPaletteItem');
+    cy.get('[data-cy="palette-item-Base.Button"]').should('be.visible').as('buttonPaletteItem');
 
     // Drag the Button palette item into the container
     cy.get('@buttonPaletteItem').drag('@containerElement');
 
     // Verify the node appears in the canvas
-    cy.get('[class*="nodeInteractive"]').should('exist');
+    cy.get('[data-cy="bb-node-interactive"]').should('exist');
     cy.get('button').contains('Button').should('exist');
 
     // Now test Figma-style gaps by hovering over the existing element with another dragged item
-    cy.get('[title="Base.P"]').should('be.visible').as('paragraphPaletteItem');
+    cy.get('[data-cy="palette-item-Base.P"]').should('be.visible').as('paragraphPaletteItem');
 
     // Start drag but wait to verify the drop space classes appear dynamically
     cy.get('@paragraphPaletteItem').trigger('mousedown', { button: 0 });
@@ -43,7 +43,7 @@ describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
     cy.get('button').trigger('dragover', 'top');
 
     // Verify that the element gains the padding-based gap class
-    cy.get('button').closest('[class*="nodeInteractive"]').should('have.class', /dropSpaceTop|dropSpaceBottom/);
+    cy.get('button').closest('[data-cy="bb-node-interactive"]').should('have.class', /dropSpaceTop|dropSpaceBottom/);
 
     // Drop the paragraph
     cy.get('button').trigger('drop');
@@ -55,24 +55,24 @@ describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
 
   it('should allow configuring available media types for Base.Media', () => {
     // Wait for the Canvas and Elements Palette to render
-    cy.get('[class*="canvasArea"]').should('be.visible');
+    cy.get('[data-cy="bb-canvas-area"]').should('be.visible');
     
     // Drag Base.Container first to establish a valid root element
-    cy.get('[title="Base.Container"]').should('be.visible').as('containerPaletteItem');
-    cy.get('[class*="rootDropZone"]').should('be.visible').as('dropZone');
+    cy.get('[data-cy="palette-item-Base.Container"]').should('be.visible').as('containerPaletteItem');
+    cy.get('[data-cy="bb-root-drop-zone"]').should('be.visible').as('dropZone');
     cy.get('@containerPaletteItem').drag('@dropZone');
 
     // Wait for the container to render in the canvas, and use it as the new drop zone
-    cy.get('div[class*="container"]').first().should('exist').as('containerElement');
+    cy.get('[data-cy="bb-rendered-container"]').first().should('exist').as('containerElement');
 
     // The palette item for "Base.Media"
-    cy.get('[title="Base.Media"]').should('be.visible').as('mediaPaletteItem');
+    cy.get('[data-cy="palette-item-Base.Media"]').should('be.visible').as('mediaPaletteItem');
 
     // Drag Base.Media onto the drop zone
     cy.get('@mediaPaletteItem').drag('@containerElement');
 
     // Click the placed media component to select it and open Settings
-    cy.get('[class*="nodeInteractive"]').contains('Media').click({ force: true });
+    cy.get('[data-cy="bb-node-interactive"]').contains('Media').click({ force: true });
 
     // Ensure the Settings panel shows the "Allowed Media Types" section
     cy.get('div').contains('Allowed Media Types').should('be.visible');
@@ -93,21 +93,21 @@ describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
 
   it('should strictly prevent dragging non-container elements directly into the empty root canvas', () => {
     // Wait for the Canvas to render empty
-    cy.get('[class*="canvasArea"]').should('be.visible');
+    cy.get('[data-cy="bb-canvas-area"]').should('be.visible');
     
     // The palette item for "Base.Button"
-    cy.get('[title="Base.Button"]').should('be.visible').as('buttonPaletteItem');
-    cy.get('[class*="rootDropZone"]').should('be.visible').as('dropZone');
+    cy.get('[data-cy="palette-item-Base.Button"]').should('be.visible').as('buttonPaletteItem');
+    cy.get('[data-cy="bb-root-drop-zone"]').should('be.visible').as('dropZone');
 
     // Drag the Button palette item directly onto the empty root drop zone
     cy.get('@buttonPaletteItem').drag('@dropZone');
 
     // Verify the central container enforces rejection, keeping interactive nodes out of DOM
     cy.get('button').should('not.exist');
-    cy.get('[class*="nodeInteractive"]').should('not.exist');
+    cy.get('[data-cy="bb-node-interactive"]').should('not.exist');
 
     // Empty canvas instructions must still persist
-    cy.get('[class*="emptyCanvasText"]').contains('Drag elements here').should('exist');
+    cy.get('[data-cy="bb-empty-canvas"]').contains('Drag elements here').should('exist');
   });
 });
 

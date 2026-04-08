@@ -1,63 +1,92 @@
-import { TEST_PROJECT_URL } from '../editorTestHelper';
-
+/**
+ * Interactions Page Object
+ *
+ * All selectors use data-cy attributes exclusively.
+ */
 class InteractionsPage {
-  // Elements
-  get interactionTab() {
-    return cy.get('[data-cy="tab-Interaction"]');
-  }
 
-  get addInteractionBtn() {
-    return cy.get('[data-cy="interaction-add-btn"]');
-  }
+    /**
+     * Select a trigger type from the interaction trigger dropdown.
+     * @param {string} triggerType - The trigger type to select (e.g. 'click', 'scroll-into-view')
+     */
+    selectTriggerType(triggerType) {
+        cy.get('[data-cy="interaction-trigger-select"]', { timeout: 5000 })
+            .should('be.visible')
+            .click();
+        cy.get('[data-cy="interaction-trigger-option"]')
+            .contains(triggerType)
+            .click();
+    }
 
-  get interactionItems() {
-    return cy.get('[data-cy^="interaction-item-"]');
-  }
+    /**
+     * Select an animation from the animation dropdown.
+     * @param {string} animationName - The animation to select
+     */
+    selectAnimation(animationName) {
+        cy.get('[data-cy="interaction-animation-select"]', { timeout: 5000 })
+            .should('be.visible')
+            .click();
+        cy.get('[data-cy="interaction-animation-option"]')
+            .contains(animationName)
+            .click();
+    }
 
-  get triggerTypeSelect() {
-    // Select the first dropdown in the active EditPopup
-    return cy.get('.EditPopup_body__\\w+').find('.Select_container__\\w+').first();
-  }
-  
-  get replayToggle() {
-    // The exact label from ScrollConfigurator.tsx
-    return cy.contains('Trigger animation every time').parent().find('input[type="checkbox"]');
-  }
+    /**
+     * Toggle the "Trigger animation every time upon scroll" checkbox.
+     */
+    toggleReplayOnScroll() {
+        cy.get('[data-cy="interaction-replay-toggle"]', { timeout: 5000 })
+            .should('be.visible')
+            .click();
+    }
 
-  get removeOnCompleteToggleContainer() {
-    // The exact label from InteractionEditor.tsx
-    return cy.contains('Hide element (display: none)').parent();
-  }
+    /**
+     * Toggle the "Hide element after animation finishes" checkbox.
+     */
+    toggleRemoveOnComplete() {
+        cy.get('[data-cy="interaction-remove-complete-toggle"]', { timeout: 5000 })
+            .should('be.visible')
+            .click();
+    }
 
-  // Actions
-  openInteractionTab() {
-    this.interactionTab.should('be.visible').click();
-  }
+    /**
+     * Open the interaction editor popup for the current element.
+     */
+    openInteractionPopup() {
+        cy.get('[data-cy="edit-popup"]', { timeout: 5000 })
+            .should('be.visible');
+    }
 
-  clickAddInteraction() {
-    this.addInteractionBtn.should('be.visible').click();
-  }
+    /**
+     * Close the interaction editor popup.
+     */
+    closeInteractionPopup() {
+        cy.get('[data-cy="edit-popup"]').find('[data-cy="edit-popup-close"]').click();
+    }
 
-  setTriggerType(typeText) {
-    cy.contains('Type').parent().find('div[class*="Select_select"]').click();
-    cy.contains(typeText).click();
-  }
+    /**
+     * Verify a toast message appears with the given text.
+     * @param {string} message - Expected toast message text
+     */
+    verifyToast(message) {
+        cy.get('[data-cy="toast-message"]', { timeout: 6000 })
+            .should('be.visible')
+            .and('contain.text', message);
+    }
 
-  toggleReplay() {
-    this.replayToggle.click({ force: true });
-  }
+    /**
+     * Click on a blinkpage element in the playground to select it.
+     */
+    clickBlinkpageElement() {
+        cy.get('[data-cy="blinkpage-tag"]', { timeout: 5000 }).first().click({ force: true });
+    }
 
-  verifyToastVisible(messageFragment) {
-    cy.get('.Toastify__toast-body').should('contain.text', messageFragment);
-  }
-
-  verifyRemoveOnCompleteIsOn() {
-    this.removeOnCompleteToggleContainer.find('input[type="checkbox"]').should('be.checked');
-  }
-
-  verifyRemoveOnCompleteIsOff() {
-    this.removeOnCompleteToggleContainer.find('input[type="checkbox"]').should('not.be.checked');
-  }
+    /**
+     * Verify the playground is visible.
+     */
+    verifyPlayground() {
+        cy.get('[data-cy="playground"]', { timeout: 5000 }).should('be.visible');
+    }
 }
 
 export const interactionsPage = new InteractionsPage();

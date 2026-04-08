@@ -305,10 +305,10 @@ describe('Inline Editor - Global Component Copy Edits (Non-Array)', () => {
     cy.get('[data-component-index]').should('have.length.at.least', 2);
 
     // Get blinkpage tags from component1 (first section)
-    cy.get('[data-component-index="0"]').find('blinkpage').first().then(($tag1) => {
+    cy.get('[data-component-index="0"]').find('[data-cy="blinkpage-tag"]').first().then(($tag1) => {
       const comp1Id = $tag1.attr('id');
 
-      cy.get('[data-component-index="1"]').find('blinkpage').first().then(($tag2) => {
+      cy.get('[data-component-index="1"]').find('[data-cy="blinkpage-tag"]').first().then(($tag2) => {
         const comp2Id = $tag2.attr('id');
 
         // Edit component1 title
@@ -322,7 +322,7 @@ describe('Inline Editor - Global Component Copy Edits (Non-Array)', () => {
         inlineEditorPage.verifyBlinkpageContent(comp1Id, 'Component1 Updated');
 
         // Verify component2 is untouched
-        cy.get(`blinkpage#${comp2Id}`).should('not.contain.text', 'Component1 Updated');
+        cy.get(`[data-cy="blinkpage-tag"]#${comp2Id}`).should('not.contain.text', 'Component1 Updated');
       });
     });
   });
@@ -330,10 +330,10 @@ describe('Inline Editor - Global Component Copy Edits (Non-Array)', () => {
   it('should persist consecutive edits to both components', () => {
     cy.get('[data-component-index]').should('have.length.at.least', 2);
 
-    cy.get('[data-component-index="0"]').find('blinkpage').first().then(($tag1) => {
+    cy.get('[data-component-index="0"]').find('[data-cy="blinkpage-tag"]').first().then(($tag1) => {
       const comp1Id = $tag1.attr('id');
 
-      cy.get('[data-component-index="1"]').find('blinkpage').first().then(($tag2) => {
+      cy.get('[data-component-index="1"]').find('[data-cy="blinkpage-tag"]').first().then(($tag2) => {
         const comp2Id = $tag2.attr('id');
 
         // Edit component1
@@ -375,10 +375,10 @@ describe('Inline Editor - Global Component Copy Edits (Array Items)', () => {
     cy.get('[data-component-index]').should('have.length.at.least', 2);
 
     // Get the 2nd blinkpage tag (array item) from each component
-    cy.get('[data-component-index="0"]').find('blinkpage').eq(1).then(($tag1) => {
+    cy.get('[data-component-index="0"]').find('[data-cy="blinkpage-tag"]').eq(1).then(($tag1) => {
       const comp1ArrayId = $tag1.attr('id');
 
-      cy.get('[data-component-index="1"]').find('blinkpage').eq(1).then(($tag2) => {
+      cy.get('[data-component-index="1"]').find('[data-cy="blinkpage-tag"]').eq(1).then(($tag2) => {
         const comp2ArrayId = $tag2.attr('id');
 
         // Edit array item in component1
@@ -392,7 +392,7 @@ describe('Inline Editor - Global Component Copy Edits (Array Items)', () => {
         inlineEditorPage.verifyBlinkpageContent(comp1ArrayId, editorData.updatedMemberName);
 
         // Verify component2 array item is untouched
-        cy.get(`blinkpage#${comp2ArrayId}`)
+        cy.get(`[data-cy="blinkpage-tag"]#${comp2ArrayId}`)
           .should('not.contain.text', editorData.updatedMemberName);
       });
     });
@@ -401,10 +401,10 @@ describe('Inline Editor - Global Component Copy Edits (Array Items)', () => {
   it('should handle mixed edits: component1 array item + component2 root string', () => {
     cy.get('[data-component-index]').should('have.length.at.least', 2);
 
-    cy.get('[data-component-index="0"]').find('blinkpage').eq(1).then(($tag1) => {
+    cy.get('[data-component-index="0"]').find('[data-cy="blinkpage-tag"]').eq(1).then(($tag1) => {
       const comp1ArrayId = $tag1.attr('id');
 
-      cy.get('[data-component-index="1"]').find('blinkpage').first().then(($tag2) => {
+      cy.get('[data-component-index="1"]').find('[data-cy="blinkpage-tag"]').first().then(($tag2) => {
         const comp2RootId = $tag2.attr('id');
 
         // Edit component1 array item
@@ -456,7 +456,7 @@ describe('Inline Editor - Array Item Targeting (Same Component)', () => {
         const secondItemId = $tags.eq(2).attr('id');
 
         // Capture original text of the 1st item
-        cy.get(`blinkpage#${firstItemId}`).invoke('text').then((originalFirst) => {
+        cy.get(`[data-cy="blinkpage-tag"]#${firstItemId}`).invoke('text').then((originalFirst) => {
           // Edit the 2nd item
           inlineEditorPage.activateEditor(secondItemId);
           inlineEditorPage.selectAllText();
@@ -468,7 +468,7 @@ describe('Inline Editor - Array Item Targeting (Same Component)', () => {
           inlineEditorPage.verifyBlinkpageContent(secondItemId, editorData.updatedArrayItem2);
 
           // 1st item should be unchanged
-          cy.get(`blinkpage#${firstItemId}`).should('contain.text', originalFirst);
+          cy.get(`[data-cy="blinkpage-tag"]#${firstItemId}`).should('contain.text', originalFirst);
         });
       });
   });
@@ -481,8 +481,8 @@ describe('Inline Editor - Array Item Targeting (Same Component)', () => {
         const secondItemId = $tags.eq(2).attr('id');
         const thirdItemId = $tags.eq(3).attr('id');
 
-        cy.get(`blinkpage#${firstItemId}`).invoke('text').then((originalFirst) => {
-          cy.get(`blinkpage#${secondItemId}`).invoke('text').then((originalSecond) => {
+        cy.get(`[data-cy="blinkpage-tag"]#${firstItemId}`).invoke('text').then((originalFirst) => {
+          cy.get(`[data-cy="blinkpage-tag"]#${secondItemId}`).invoke('text').then((originalSecond) => {
             // Edit the 3rd item
             inlineEditorPage.activateEditor(thirdItemId);
             inlineEditorPage.selectAllText();
@@ -494,8 +494,8 @@ describe('Inline Editor - Array Item Targeting (Same Component)', () => {
             inlineEditorPage.verifyBlinkpageContent(thirdItemId, editorData.updatedArrayItem3);
 
             // 1st and 2nd should be unchanged
-            cy.get(`blinkpage#${firstItemId}`).should('contain.text', originalFirst);
-            cy.get(`blinkpage#${secondItemId}`).should('contain.text', originalSecond);
+            cy.get(`[data-cy="blinkpage-tag"]#${firstItemId}`).should('contain.text', originalFirst);
+            cy.get(`[data-cy="blinkpage-tag"]#${secondItemId}`).should('contain.text', originalSecond);
           });
         });
       });
@@ -559,7 +559,7 @@ describe('Inline Editor - Blinkpage Tag Switching', () => {
         inlineEditorPage.verifyToolbarVisible();
 
         // Click second tag — editor should switch to it
-        cy.get(`blinkpage#${secondTagId}`).click();
+        cy.get(`[data-cy="blinkpage-tag"]#${secondTagId}`).click();
         cy.wait(300);
 
         // Toolbar should still be visible (not disappear)
@@ -586,7 +586,7 @@ describe('Inline Editor - Blinkpage Tag Switching', () => {
             inlineEditorPage.verifyEditorIsActive();
 
             // Click tag in component 1 — should switch
-            cy.get(`blinkpage#${tag1Id}`).click();
+            cy.get(`[data-cy="blinkpage-tag"]#${tag1Id}`).click();
             cy.wait(300);
 
             // Toolbar should still be visible
@@ -609,7 +609,7 @@ describe('Inline Editor - Blinkpage Tag Switching', () => {
         inlineEditorPage.typeInEditor(editorData.updatedTitle);
 
         // Click second tag (should save first tag's content and switch)
-        cy.get(`blinkpage#${secondTagId}`).click();
+        cy.get(`[data-cy="blinkpage-tag"]#${secondTagId}`).click();
         cy.wait(500);
 
         // Click outside to deactivate

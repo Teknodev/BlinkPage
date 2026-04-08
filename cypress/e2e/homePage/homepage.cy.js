@@ -24,7 +24,7 @@ describe('Home Page ', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "shahbahram97@gamil.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
@@ -35,7 +35,7 @@ describe('Home Page ', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[type="password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "BlinkPage7424", shouldType: true, shouldClear: true, placeholder: "Password"
@@ -63,7 +63,7 @@ describe('Home Page ', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "shahbahram97@gamil.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
@@ -74,7 +74,7 @@ describe('Home Page ', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[type="password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "BlinkPage7424", shouldType: true, shouldClear: true, placeholder: "Password"
@@ -101,7 +101,7 @@ describe('Home Page ', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "shahbahram97@gamil.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
@@ -112,7 +112,7 @@ describe('Home Page ', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[type="password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "BlinkPage7424", shouldType: true, shouldClear: true, placeholder: "Password"
@@ -135,7 +135,7 @@ describe('Home Page ', () => {
 
         loginPage.clickProfileIcon();
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "", shouldType: true, shouldClear: true, placeholder: "E-mail"
@@ -146,7 +146,7 @@ describe('Home Page ', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[type="password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "", shouldType: true, shouldClear: true, placeholder: "Password"
@@ -167,7 +167,7 @@ describe('Home Page ', () => {
 
         loginPage.clickProfileIcon();
         verifyTextField(
-            'input[name="email"]',
+            '[data-cy="input-email"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "shahbahram97@gmail.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
@@ -178,7 +178,7 @@ describe('Home Page ', () => {
 
         //Email field visibility and type check
         verifyTextField(
-            'input[type="password"]',
+            '[data-cy="password-input"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "BlinkPage7424", shouldType: true, shouldClear: true, placeholder: "Password"
@@ -207,7 +207,7 @@ describe('Home Page ', () => {
         contactUsPage.contactusbutton()
         verifyUrl('/contact')
         verifyTextField(
-            '[class*="_searchInput"]',
+            '[data-cy="subject-search-input"]',
             {
                 fontSize: "10px", textColor: "rgb(255, 255, 255)", backgroundColor: "rgba(0, 0, 0, 0)",
                 borderRadius: '0px', value: "", shouldType: true, shouldClear: true, placeholder: "Subject"
@@ -231,7 +231,7 @@ describe('Home Page ', () => {
 
         cy.wait(5000)
         
-        verifyErrorMessage('[class*="_error"]','Required')
+        verifyErrorMessage('[data-cy="form-error"]','Required')
 
     })
     it('Verify First Name field accepts valid input',() => {
@@ -241,7 +241,7 @@ describe('Home Page ', () => {
         verifyUrl('/contact');
         
         verifyTextField(
-            'input[placeholder="First Name"]', 
+            '[data-cy="input-firstname"]', 
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "John", shouldType: true, shouldClear: true, placeholder: "First Name"
@@ -256,7 +256,7 @@ describe('Home Page ', () => {
         
         verifyUrl('/contact');
         
-        fieldInput('input[placeholder="Last Name"]','Last Name', 'Doe')
+        fieldInput('[data-cy="input-lastname"]','Last Name', 'Doe')
 
     })
     it('Verify Email field accepts valid email',() => {
@@ -266,7 +266,7 @@ describe('Home Page ', () => {
         verifyUrl('/contact');
         
         verifyTextField(
-            'input[placeholder="E-mail"]',
+            '[data-cy="input-contact-email"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "john.doe@test.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
@@ -283,7 +283,7 @@ describe('Home Page ', () => {
         verifyUrl('/contact');
         
         verifyTextField(
-            'input[placeholder="E-mail"]',
+            '[data-cy="input-contact-email"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "john.doe@", shouldType: true, shouldClear: true, placeholder: "E-mail"
@@ -302,7 +302,7 @@ describe('Home Page ', () => {
         verifyUrl('/contact');
         
         verifyTextField(
-            'input[placeholder="Phone"]',
+            '[data-cy="input-phone"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "9876543210", shouldType: true, shouldClear: true, placeholder: "Phone"
@@ -318,7 +318,7 @@ describe('Home Page ', () => {
         verifyUrl('/contact');
         
         verifyTextField(
-            'input[placeholder="Phone"]',
+            '[data-cy="input-phone"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "ab352", shouldType: true, shouldClear: true, placeholder: "Phone"
@@ -326,7 +326,7 @@ describe('Home Page ', () => {
             true,
             true
         )
-        cy.get('div[class*="_content"]').click();
+        cy.get('[data-cy="contact-form-content"]').click();
         verifyFieldErrorMessage('phone', 'Phone number is not valid')
 
     })
@@ -337,7 +337,7 @@ describe('Home Page ', () => {
         verifyUrl('/contact');
 
         verifyTextField(
-            '[class*="_searchInput"]',
+            '[data-cy="subject-search-input"]',
             {
                 fontSize: "10px", textColor: "rgb(255, 255, 255)", backgroundColor: "rgba(0, 0, 0, 0)",
                 borderRadius: '0px', value: "", shouldType: true, shouldClear: true, placeholder: "Subject"
@@ -350,7 +350,7 @@ describe('Home Page ', () => {
         contactUsPage.selectDropdownOption('Plan')
 
         verifyTextField(
-            'input[placeholder="First Name"]', 
+            '[data-cy="input-firstname"]', 
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "John", shouldType: true, shouldClear: true, placeholder: "First Name"
@@ -358,10 +358,10 @@ describe('Home Page ', () => {
             true,
             true
         );
-        fieldInput('input[placeholder="Last Name"]','Last Name', 'Doe');
+        fieldInput('[data-cy="input-lastname"]','Last Name', 'Doe');
 
         verifyTextField(
-            'input[placeholder="E-mail"]',
+            '[data-cy="input-contact-email"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "john.doe@test.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
@@ -372,7 +372,7 @@ describe('Home Page ', () => {
 
 
         verifyTextField(
-            'input[placeholder="Phone"]',
+            '[data-cy="input-phone"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "9876543210", shouldType: true, shouldClear: true, placeholder: "Phone"
@@ -393,9 +393,9 @@ describe('Home Page ', () => {
         verifyUrl('/contact');
 
         contactUsPage.inputMessage('Test')
-        cy.get('div[class*="_content"]').click();
+        cy.get('[data-cy="contact-form-content"]').click();
 
-        verifyErrorMessage('[class*="_textareaContainer"]', 'Min 5 characters!')
+        verifyErrorMessage('[data-cy="message-textarea-container"]', 'Min 5 characters!')
         
         
 
@@ -410,7 +410,7 @@ describe('Home Page ', () => {
         verifyUrl('/contact');
 
         verifyTextField(
-            '[class*="_searchInput"]',
+            '[data-cy="subject-search-input"]',
             {
                 fontSize: "10px", textColor: "rgb(255, 255, 255)", backgroundColor: "rgba(0, 0, 0, 0)",
                 borderRadius: '0px', value: "", shouldType: true, shouldClear: true, placeholder: "Subject"
@@ -423,7 +423,7 @@ describe('Home Page ', () => {
         contactUsPage.selectDropdownOption('Plan')
 
         verifyTextField(
-            'input[placeholder="First Name"]', 
+            '[data-cy="input-firstname"]', 
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "John", shouldType: true, shouldClear: true, placeholder: "First Name"
@@ -431,10 +431,10 @@ describe('Home Page ', () => {
             true,
             true
         );
-        fieldInput('input[placeholder="Last Name"]','Last Name', 'Doe');
+        fieldInput('[data-cy="input-lastname"]','Last Name', 'Doe');
 
         verifyTextField(
-            'input[placeholder="E-mail"]',
+            '[data-cy="input-contact-email"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "john.doe@test.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
@@ -445,7 +445,7 @@ describe('Home Page ', () => {
 
 
         verifyTextField(
-            'input[placeholder="Phone"]',
+            '[data-cy="input-phone"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "9876543210", shouldType: true, shouldClear: true, placeholder: "Phone"
@@ -454,7 +454,7 @@ describe('Home Page ', () => {
             true
         );
         verifyTextField(
-            'input[placeholder="Company (Optional)"]',
+            '[data-cy="input-company"]',
             {
                 fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
                 borderRadius: '6px', value: "9876543210", shouldType: true, shouldClear: true, placeholder: "Company (Optional)"
@@ -481,7 +481,7 @@ describe('Home Page ', () => {
         contactUsPage.submitButton();
 
         // subject field error message
-        verifyErrorMessage('[class*="_error"]','Required')
+        verifyErrorMessage('[data-cy="form-error"]','Required')
 
         // First Name field error message
         verifyFieldErrorMessage('name','Required');
@@ -496,7 +496,7 @@ describe('Home Page ', () => {
         verifyFieldErrorMessage('phone','Required')
 
         // Message field error message 
-        verifyErrorMessage('[class*="_textareaContainer"]', 'Required')
+        verifyErrorMessage('[data-cy="message-textarea-container"]', 'Required')
 
 
 
