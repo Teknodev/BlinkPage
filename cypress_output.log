@@ -1,0 +1,22 @@
+
+DevTools listening on ws://127.0.0.1:52331/devtools/browser/fbe2d3b9-cc22-4b88-8f0b-93b0100b050b
+
+========================================================================
+
+  (Run Starting)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        14.5.4                                                                         │
+  │ Browser:        Electron 130 (headless)                                                        │
+  │ Node Version:   v22.17.1 (/usr/local/bin/node)                                                 │
+  │ Specs:          1 found (block-builder.cy.js)                                                  │
+  │ Searched:       cypress/e2e/blockBuilder/block-builder.cy.js                                   │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  block-builder.cy.js                                                             (1 of 1)
+
+
+  Block Builder - Drag and Drop Figma-style Gaps

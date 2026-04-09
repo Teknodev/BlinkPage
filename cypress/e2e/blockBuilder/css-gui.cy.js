@@ -38,4 +38,27 @@ describe('CSS GUI - Design Controls Validation', () => {
     cy.get('span').contains(/^Top$/).parent().parent().find('input').should('not.be.disabled');
   });
 
+  it('should not inject rogue default inline styles (padding) when decomposing existing components', () => {
+    // Load an existing component explicitly to trigger decomposeComponentByName logic
+    cy.visit('/project/1/blockbuilder?component=Base.Container');
+
+    // Wait for the Canvas to render
+    cy.get('[data-cy="bb-canvas-area"]').should('be.visible');
+
+    // The container should not have default var(--padding-md) injected into its inline style string.
+    cy.get('[data-component-name="Base.Container"]')
+      .should('be.visible')
+      .then(($el) => {
+        const style = $el.attr('style') || "";
+        expect(style).to.not.include('padding-top: var(--padding-md)');
+      });
+
+    // Selecting it should also not force the layout to shift or inject the style
+    cy.get('[data-component-name="Base.Container"]').click({ force: true });
+    
+    cy.get('[data-component-name="Base.Container"]').then(($el) => {
+        const style = $el.attr('style') || "";
+        expect(style).to.not.include('padding-top: var(--padding-md)');
+    });
+  });
 });
