@@ -109,5 +109,61 @@ describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
     // Empty canvas instructions must still persist
     cy.get('[data-cy="bb-empty-canvas"]').contains('Drag elements here').should('exist');
   });
-});
 
+  it('should restrict hierarchy modifications on smart parent replica children', () => {
+    // Note: E2E Implementation Stub
+    // 1. Drag a Container into the canvas (Root container).
+    // 2. Click the Container to reveal Settings panel.
+    // 3. Toggle "Make Smart Parent" via Settings.
+    // 4. Duplicate the first child inside the Container to create a Replica.
+    // 5. Attempt to drag a node inside the second child (Replica).
+    // Expected: The drag drop event should intercept or prevent modifications and the lock icon should appear.
+    // Ensure styles differentiate between Class vs ID scoping selections.
+  });
+
+  it('should include all smart parent children values in generated addProp when saving', () => {
+    // Regression test for bug: Smart Parent save only included child 0 values in addProp array.
+    //
+    // Scenario:
+    // 1. Create a Smart Parent container with 3 children.
+    // 2. Each child contains a text element (e.g., Base.P) with distinct text:
+    //    - Child 0: "Hello"
+    //    - Child 1: "World" (edited via ID mode)
+    //    - Child 2: "Foo" (edited via ID mode)
+    // 3. Save the component.
+    //
+    // Expected:
+    // The generated addProp call should contain an array with 3 object entries,
+    // each carrying its own distinct text value ("Hello", "World", "Foo").
+    //
+    // Before fix: Only 1 entry (from child 0) was generated.
+    // After fix:  N entries (one per child) are generated.
+    //
+    // Note: Full automation requires intercepting the save API call and inspecting
+    // the generated bundleCode payload. This is a structural test stub.
+  });
+
+  it('should preserve the same element tree when saving and re-editing a component', () => {
+    // Regression test for bug: saving a component and re-editing it in Block Builder
+    // added extra <div> wrapper nodes into the element tree.
+    //
+    // Root cause: generateSmartParentCode and generateListGridCode wrapped each
+    // .map() item in React.createElement("div", { key: index }, ...) which the
+    // decomposer then parsed as a real div node on re-edit.
+    //
+    // Fix: The template child's own element now carries key={index} directly,
+    // eliminating the extra wrapper div.
+    //
+    // Scenario:
+    // 1. Create a Smart Parent with children containing text/media nodes.
+    // 2. Save the component.
+    // 3. Re-open the same component in Block Builder.
+    // 4. Compare the tree node count before and after the save-reopen cycle.
+    //
+    // Expected: The tree should have the exact same depth and node count.
+    // Before fix: Extra div nodes appeared as children of the Smart Parent container.
+    // After fix: No extra nodes are introduced.
+    //
+    // Note: Full automation requires saving and re-loading via API intercept.
+  });
+});

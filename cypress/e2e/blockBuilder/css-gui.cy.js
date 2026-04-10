@@ -61,4 +61,27 @@ describe('CSS GUI - Design Controls Validation', () => {
         expect(style).to.not.include('padding-top: var(--padding-md)');
     });
   });
+
+  it('should not inject generic purple background colors implicitly from ColorPicker on mount', () => {
+    // 1. Load an empty component / generic component
+    cy.visit('/project/1/blockbuilder?component=Base.Container');
+
+    // 2. Wait for the Canvas to render and select Container
+    cy.get('[data-cy="bb-canvas-area"]').should('be.visible');
+    cy.get('[data-cy="bb-node-interactive"]').contains('Container').click({ force: true });
+    
+    // 3. Open Design Tab
+    cy.get('div').contains('Design').click({ force: true });
+
+    // 4. Scroll to Background Section and expand it
+    cy.get('div').contains('Background').scrollIntoView().click({ force: true });
+
+    // 5. Explicitly verify that the DOM has NOT suddenly updated to background-color: rgb(125, 43, 169)
+    // after simply mounting the CSSGUI and Background tabs.
+    cy.get('[data-component-name="Base.Container"]').then(($el) => {
+        const style = $el.attr('style') || "";
+        expect(style).to.not.include('background');
+        expect(style).to.not.include('rgb(125, 43, 169)');
+    });
+  });
 });
