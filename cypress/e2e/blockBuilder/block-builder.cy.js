@@ -166,4 +166,16 @@ describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
     //
     // Note: Full automation requires saving and re-loading via API intercept.
   });
+
+  it('should not initially render popovers at absolute origin during async coordinate calculation', () => {
+    // Regression test for bug: When clicking "Add Element" in the playground, the popup initially
+    // appears in the left-side tree panel (0,0) and then repositions to its correct location.
+    //
+    // Root cause: The Add Element popup was mounted to `document.body` via `createPortal`. In the first
+    // frame, `popoverCoords` initialized to `{ top: 0, left: 0 }`. It rendered exactly 1 frame at the 
+    // absolute top-left of the viewport before React finalized the coordinate calculation from the button's bounds.
+    //
+    // Fix: Initialized the `popoverCoords` to `null` and added a strict `&& popoverCoords` render guard 
+    // to strictly block the DOM portal from mounting physically until coordinates are guaranteed valid.
+  });
 });

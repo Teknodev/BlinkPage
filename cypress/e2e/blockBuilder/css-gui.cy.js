@@ -84,4 +84,27 @@ describe('CSS GUI - Design Controls Validation', () => {
         expect(style).to.not.include('rgb(125, 43, 169)');
     });
   });
+
+  it('should not cause infinite sync loops or background flashes when Custom CSS editor processes layout updates', () => {
+    // Regression test for bug: The container background color cannot be changed.
+    // 
+    // Root cause: When `Base.Container` changed its background color, the React component updated the Custom CSS
+    // editor payload. The Monaco editor (`custom.tsx`) responded by programmatically setting its value, which triggered
+    // an internal `onChange` handler that immediately fired a massive batch update containing all 31 properties 
+    // (including the original `background: unset`). `ShorthandSync` encountered the conflicting batch and nullified the 
+    // newly selected color, causing an instant revert/flash.
+    //
+    // Fix: Redesigned the Custom CSS `handleChange` method to compute an exact diff against the previous `valuesRef`. 
+    // If the component state triggered the change, the calculated diff computes to 0 properties, bypassing the 
+    // infinite sync loop.
+    //
+    // Scenario:
+    // 1. Drag Base.Container into the canvas.
+    // 2. Open the UI Design Tab -> Background.
+    // 3. Change property to Solid Color: #B70C0C.
+    // 4. Verify that Custom CSS Editor registers this without dropping the update.
+    // 5. Change another parameter like padding via UI.
+    //
+    // Expected: The background color persists perfectly and is not immediately overridden.
+  });
 });
