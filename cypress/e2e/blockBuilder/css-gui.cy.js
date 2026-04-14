@@ -19,23 +19,23 @@ describe('CSS GUI - Design Controls Validation', () => {
     cy.get('[data-cy="bb-node-interactive"]').contains('Container').click({ force: true });
 
     // Open Design tab
-    cy.get('div').contains('Design').click({ force: true });
+    cy.get('[data-cy="tab-Design"]').click({ force: true });
 
     // Scroll to Placement Section
-    cy.get('div').contains('Placement').scrollIntoView().should('be.visible');
+    cy.get('[data-cy="category-section-placement"]').scrollIntoView().should('be.visible');
 
     // Confirm that since position is Static by default, the 'Left' and 'Top' metrics are forced strictly into disabled visual ghosting
     // We check that inner inputs are `disabled` in DOM
-    cy.get('span').contains(/^Left$/).parent().parent().find('input').should('be.disabled');
-    cy.get('span').contains(/^Top$/).parent().parent().find('input').should('be.disabled');
+    cy.get('[data-cy="placement-left"]').should('be.disabled');
+    cy.get('[data-cy="placement-top"]').should('be.disabled');
     
     // Now toggle Position to Absolute (usually the first/second item in Placement)
     // Absolute position toggle has AbsoluteIcon (it will be visible via WTooltip "Absolute Position")
-    cy.get('[aria-label="Absolute Position"]').click({ force: true });
+    cy.get('[data-cy="placement-absolute-toggle"]').click({ force: true });
 
     // The inputs should now be unlocked!
-    cy.get('span').contains(/^Left$/).parent().parent().find('input').should('not.be.disabled');
-    cy.get('span').contains(/^Top$/).parent().parent().find('input').should('not.be.disabled');
+    cy.get('[data-cy="placement-left"]').should('not.be.disabled');
+    cy.get('[data-cy="placement-top"]').should('not.be.disabled');
   });
 
   it('should not inject rogue default inline styles (padding) when decomposing existing components', () => {
@@ -71,10 +71,10 @@ describe('CSS GUI - Design Controls Validation', () => {
     cy.get('[data-cy="bb-node-interactive"]').contains('Container').click({ force: true });
     
     // 3. Open Design Tab
-    cy.get('div').contains('Design').click({ force: true });
+    cy.get('[data-cy="tab-Design"]').click({ force: true });
 
     // 4. Scroll to Background Section and expand it
-    cy.get('div').contains('Background').scrollIntoView().click({ force: true });
+    cy.get('[data-cy="category-section-background"]').scrollIntoView().click({ force: true });
 
     // 5. Explicitly verify that the DOM has NOT suddenly updated to background-color: rgb(125, 43, 169)
     // after simply mounting the CSSGUI and Background tabs.

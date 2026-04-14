@@ -29,8 +29,7 @@ describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
     cy.get('@buttonPaletteItem').drag('@containerElement');
 
     // Verify the node appears in the canvas
-    cy.get('[data-cy="bb-node-interactive"]').should('exist');
-    cy.get('button').contains('Button').should('exist');
+    cy.get('[data-cy="bb-node-interactive"][data-component-name="Base.Button"]').should('exist').contains('Button');
 
     // Now test Figma-style gaps by hovering over the existing element with another dragged item
     cy.get('[data-cy="palette-item-Base.P"]').should('be.visible').as('paragraphPaletteItem');
@@ -40,17 +39,17 @@ describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
     cy.get('@paragraphPaletteItem').trigger('mousemove', { clientX: 10, clientY: 10 });
     
     // Hover the mouse over the top of the placed button to trigger .dropSpaceTop
-    cy.get('button').trigger('dragover', 'top');
+    cy.get('[data-cy="bb-node-interactive"][data-component-name="Base.Button"]').trigger('dragover', 'top');
 
     // Verify that the element gains the padding-based gap class
-    cy.get('button').closest('[data-cy="bb-node-interactive"]').should('have.class', /dropSpaceTop|dropSpaceBottom/);
+    cy.get('[data-cy="bb-node-interactive"][data-component-name="Base.Button"]').should('have.class', /dropSpaceTop|dropSpaceBottom/);
 
     // Drop the paragraph
-    cy.get('button').trigger('drop');
+    cy.get('[data-cy="bb-node-interactive"][data-component-name="Base.Button"]').trigger('drop');
     cy.get('@paragraphPaletteItem').trigger('mouseup', { force: true });
 
     // Verify the new node is added
-    cy.get('p').should('exist');
+    cy.get('[data-cy="bb-node-interactive"][data-component-name="Base.P"]').should('exist');
   });
 
   it('should allow configuring available media types for Base.Media', () => {
@@ -75,18 +74,18 @@ describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
     cy.get('[data-cy="bb-node-interactive"]').contains('Media').click({ force: true });
 
     // Ensure the Settings panel shows the "Allowed Media Types" section
-    cy.get('div').contains('Allowed Media Types').should('be.visible');
+    cy.get('[data-cy="allowed-media-types-panel"]').should('be.visible');
 
     // Toggle the "Lottie" checkbox
-    cy.get('label').contains('Lottie').click();
+    cy.get('[data-cy="media-type-lottie"]').click();
 
     // The user action causes a state update that adds Lottie to the array.
     // Assert the setting is present.
-    cy.get('label').contains('Lottie').should('exist');
+    cy.get('[data-cy="media-type-lottie"]').should('exist');
 
     // Verify CSSGUI renders extended image properties like object-fit in the Design Tab
-    cy.get('div').contains('Design').click({ force: true });
-    cy.get('div').contains('Size').should('be.visible');
+    cy.get('[data-cy="tab-Design"]').click({ force: true });
+    cy.get('[data-cy="category-section-size"]').should('be.visible');
     // We added object-fit to css-properties.tsx explicitly for Media elements
     cy.get('label').contains('object-fit').should('exist');
   });
@@ -103,8 +102,7 @@ describe('Block Builder - Drag and Drop Figma-style Gaps', () => {
     cy.get('@buttonPaletteItem').drag('@dropZone');
 
     // Verify the central container enforces rejection, keeping interactive nodes out of DOM
-    cy.get('button').should('not.exist');
-    cy.get('[data-cy="bb-node-interactive"]').should('not.exist');
+    cy.get('[data-cy="bb-node-interactive"][data-component-name="Base.Button"]').should('not.exist');
 
     // Empty canvas instructions must still persist
     cy.get('[data-cy="bb-empty-canvas"]').contains('Drag elements here').should('exist');

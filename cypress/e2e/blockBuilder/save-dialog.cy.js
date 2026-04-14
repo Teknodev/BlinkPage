@@ -28,31 +28,31 @@ describe('Block Builder - Custom Component Save Dialog', () => {
     cy.get('[data-cy="bb-canvas-area"]').should('be.visible');
 
     // Trigger the save dialog
-    cy.get('button').contains('Save Component').click();
+    cy.get('[data-cy="bb-save-component"]').click();
 
     // The dialog should be visible
-    cy.get('h2').contains('Save as Custom Component').should('be.visible');
+    cy.get('[data-cy="save-dialog-title"]').should('be.visible');
 
     // Wait for the mock components to be fetched
     cy.wait('@getCustomComponents');
 
     // Input the component name exactly matching the mock cache
-    cy.get('input[placeholder="My Custom Component"]').clear().type('My Custom Element');
+    cy.get('[data-cy="save-dialog-name-input"]').clear().type('My Custom Element');
 
     // The version input mechanism should automatically adjust min boundary to 3
     // because latest version in mock is 2
-    cy.get('input[type="number"]').should('have.attr', 'min', '3');
+    cy.get('[data-cy="save-dialog-version-input"]').should('have.attr', 'min', '3');
     
     // Check its programmatic value was bumped from 1 to 3
-    cy.get('input[type="number"]').should('have.value', '3');
+    cy.get('[data-cy="save-dialog-version-input"]').should('have.value', '3');
 
     // If we deliberately try to type a lesser version
-    cy.get('input[type="number"]').clear().type('1');
+    cy.get('[data-cy="save-dialog-version-input"]').clear().type('1');
     
     // Assuming UI does not prevent typing physically, the Save button click should trigger error
-    cy.get('button').contains('Save Component').click();
+    cy.get('[data-cy="save-dialog-submit-button"]').click();
 
     // Verify the validation error msg
-    cy.get('div').contains('Version for "My Custom Element" must be at least 3.').should('be.visible');
+    cy.get('[data-cy="save-dialog-error"]').contains('must be at least 3').should('be.visible');
   });
 });
