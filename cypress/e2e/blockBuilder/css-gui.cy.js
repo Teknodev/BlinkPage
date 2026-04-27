@@ -107,4 +107,61 @@ describe('CSS GUI - Design Controls Validation', () => {
     //
     // Expected: The background color persists perfectly and is not immediately overridden.
   });
+
+  it('should not show browser-computed default styles (border, background, display, flex-direction) in Custom CSS panel for a plain H3 element', () => {
+    // Regression test for bug: useBlockBuilderCssExtraction supplemented dynamicInitialCss
+    // with ALL properties from getComputedStyle that weren't in the component stylesheet.
+    // This caused the Custom CSS panel to show "border: 0px none rgb(233,233,233)",
+    // "background: rgba(0,0,0,0) none repeat scroll ...", "display: block",
+    // "flex-direction: row", "object-fit: fill", etc. for a simple H3 element with no
+    // such properties intentionally set.
+    //
+    // Fix: Removed the `else if (!existingVal)` supplement branch from step 3 in
+    // useBlockBuilderCssExtraction. getComputedStyle is now only used to resolve existing
+    // var() tokens, not to supplement the baseline with default values.
+    //
+    // Scenario:
+    // 1. Load an empty component in Block Builder.
+    // 2. Drag a Base.H3 node onto the canvas.
+    // 3. Select it.
+    // 4. Open the Design tab -> Custom CSS section.
+    // 5. Verify that the Custom CSS editor does NOT contain default computed values:
+    //    border-*, background (transparent), display: block, flex-direction: row,
+    //    object-fit: fill, opacity: 1, height (live dimension).
+    cy.visit('/project/1/blockbuilder?component=TestComponent');
+    cy.get('[data-cy="bb-canvas-area"]').should('be.visible');
+
+    // Add a H3 node
+    cy.get('[data-cy="palette-item-Base.H3"]').should('be.visible').as('h3PaletteItem');
+    cy.get('[data-cy="bb-root-drop-zone"]').should('be.visible').as('dropZone');
+    cy.get('@h3PaletteItem').drag('@dropZone');
+
+    // Select the rendered H3
+    cy.get('[data-cy="bb-node-interactive"]').contains('H3').click({ force: true });
+
+    // Open Design tab
+    cy.get('[data-cy="tab-Design"]').click({ force: true });
+
+    // Scroll to Custom section
+    cy.get('[data-cy="category-section-custom"]').scrollIntoView().should('be.visible');
+
+    // The Monaco editor value should NOT contain default computed CSS junk
+    cy.get('[data-cy="category-section-custom"]').within(() => {
+      cy.get('.view-lines').should('exist').invoke('text').then((text) => {
+        // These are browser-computed defaults that should NOT appear in the custom panel
+        expect(text).to.not.match(/border\s*:/);
+        expect(text).to.not.match(/border-left\s*:/);
+        expect(text).to.not.match(/border-right\s*:/);
+        expect(text).to.not.match(/border-top\s*:/);
+        expect(text).to.not.match(/border-bottom\s*:/);
+        expect(text).to.not.match(/display\s*:\s*block/);
+        expect(text).to.not.match(/flex-direction\s*:/);
+        expect(text).to.not.match(/flex-wrap\s*:/);
+        expect(text).to.not.match(/object-fit\s*:/);
+        expect(text).to.not.match(/opacity\s*:\s*1/);
+        expect(text).to.not.match(/background\s*:\s*rgba\(0,\s*0,\s*0,\s*0\)/);
+        expect(text).to.not.match(/background-color\s*:\s*rgba\(0,\s*0,\s*0,\s*0\)/);
+      });
+    });
+  });
 });
