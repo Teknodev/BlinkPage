@@ -1,0 +1,10 @@
+{
+  "id": "delete-section-needs-confirm",
+  "prompt": "Delete the testimonials section.",
+  "context": { "project_id": "AI_EVAL_SAAS", "page_id": "AI_EVAL_SAAS_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["pb_list_sections", "pb_delete_component"],
+  "expected_pending_confirmation": "pb_delete_component",
+  "max_iterations": 4,
+  "max_cost_usd": 0.03,
+  "dry_run": true
+}

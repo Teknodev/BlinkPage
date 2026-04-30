@@ -1,0 +1,9 @@
+{
+  "id": "restyle-buttons-rounded",
+  "prompt": "Make my hero section rounded with soft shadows.",
+  "context": { "project_id": "AI_EVAL_SAAS", "page_id": "AI_EVAL_SAAS_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["pb_list_sections", "restyle_section"],
+  "max_iterations": 5,
+  "max_cost_usd": 0.04,
+  "dry_run": true
+}

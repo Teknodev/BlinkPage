@@ -1,0 +1,9 @@
+{
+  "id": "multi-step-edit",
+  "prompt": "Translate the hero to French and update the contact email to hello@blinkpage.com.",
+  "context": { "project_id": "AI_EVAL_MULTILINGUAL", "page_id": "AI_EVAL_MULTILINGUAL_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["pb_list_sections", "translate_section", "ct_set_text"],
+  "max_iterations": 8,
+  "max_cost_usd": 0.07,
+  "dry_run": true
+}

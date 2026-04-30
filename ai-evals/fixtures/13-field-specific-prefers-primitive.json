@@ -1,0 +1,11 @@
+{
+  "id": "field-specific-prefers-primitive",
+  "prompt": "Set the about subtitle to 'Our Mission'.",
+  "context": { "project_id": "AI_EVAL_ABOUT", "page_id": "AI_EVAL_ABOUT_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["ct_set_text"],
+  "forbidden_tools": ["regenerate_section_text"],
+  "max_iterations": 5,
+  "max_cost_usd": 0.03,
+  "dry_run": true,
+  "notes": "Negative test — make sure the intent-first rule doesn't over-fire when the user explicitly names a single field. ct_set_text is the right tool here; regenerate_section_text would clobber other text fields."
+}

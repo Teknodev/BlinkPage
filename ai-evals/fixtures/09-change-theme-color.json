@@ -1,0 +1,9 @@
+{
+  "id": "change-theme-color",
+  "prompt": "Change the brand primary color to blue.",
+  "context": { "project_id": "AI_EVAL_SAAS", "page_id": "AI_EVAL_SAAS_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["theme_update_color"],
+  "max_iterations": 4,
+  "max_cost_usd": 0.03,
+  "dry_run": true
+}

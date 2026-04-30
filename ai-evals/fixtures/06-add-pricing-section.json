@@ -1,0 +1,9 @@
+{
+  "id": "add-pricing-section",
+  "prompt": "Add a pricing section after the hero.",
+  "context": { "project_id": "AI_EVAL_SAAS", "page_id": "AI_EVAL_SAAS_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["pb_list_component_types", "pb_add_component"],
+  "max_iterations": 5,
+  "max_cost_usd": 0.04,
+  "dry_run": true
+}

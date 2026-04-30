@@ -1,0 +1,9 @@
+{
+  "id": "swap-hero-section",
+  "prompt": "Replace my hero section with a different hero style.",
+  "context": { "project_id": "AI_EVAL_SAAS", "page_id": "AI_EVAL_SAAS_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["pb_list_sections", "pb_list_component_types", "pb_replace_component"],
+  "max_iterations": 6,
+  "max_cost_usd": 0.05,
+  "dry_run": true
+}
