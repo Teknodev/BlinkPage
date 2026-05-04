@@ -1,3 +1,7 @@
+import { loginToEditor } from '../../support/editorTestHelper';
+
+const EDITOR_URL = '/project/69f515295ac7bd7572f9590c/editor/0';
+
 /**
  * E2E — AI Assistant inline streaming smoke
  *
@@ -122,7 +126,9 @@ describe('AI Assistant — inline streaming smoke', () => {
       });
     }).as('aiChat');
 
-    cy.visit('/project/1/overview');
+    loginToEditor();
+    cy.get('[data-cy="header"]', { timeout: 15000 }).should('be.visible');
+    cy.wait(2000);
   });
 
   it('A) renders inline tool rows in arrival order with running -> success and B) final assistant bubble below', () => {

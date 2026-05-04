@@ -16,7 +16,9 @@
  * All selectors on their own line are correctly scoped; property lines are left untouched.
  */
 
-const PROJECT_ID = Cypress.env('TEST_PROJECT_ID') || '69e21b07349907b1b47a7a91';
+import { loginToEditor } from '../../support/editorTestHelper';
+
+const PROJECT_ID = Cypress.env('TEST_PROJECT_ID') || '69f515295ac7bd7572f9590c';
 const EDITOR_URL = `/project/${PROJECT_ID}/editor/0`;
 
 const COMPONENT_NAME = 'CssScoping Test';
@@ -50,7 +52,9 @@ window.__CUSTOM_COMPONENTS__["${COMPONENT_SAFE_NAME}_v${VERSION}"] = class ${COM
 
 describe('scopeToPlayground — CSS injection scoping regression', () => {
   beforeEach(() => {
-    cy.intercept('GET', `**/custom-component*${PROJECT_ID}*`, {
+    loginToEditor();
+
+    cy.intercept('GET', `**/resource/${PROJECT_ID}/custom-components*`, {
       body: [
         {
           _id: 'css-scope-test-id',

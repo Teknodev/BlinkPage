@@ -9,7 +9,9 @@
  * is present in the JSON entry, falling back to name-only matching for standard components.
  */
 
-const PROJECT_ID = Cypress.env('TEST_PROJECT_ID') || '69e21b07349907b1b47a7a91';
+import { loginToEditor } from '../../support/editorTestHelper';
+
+const PROJECT_ID = Cypress.env('TEST_PROJECT_ID') || '69f515295ac7bd7572f9590c';
 const EDITOR_URL = `/project/${PROJECT_ID}/editor/0`;
 
 describe('Block Builder — Quick Save version-specific rendering regression', () => {
@@ -54,8 +56,10 @@ describe('Block Builder — Quick Save version-specific rendering regression', (
   ];
 
   beforeEach(() => {
+    loginToEditor();
+
     // Intercept the custom components API call and stub all three versions
-    cy.intercept('GET', `**/custom-component*${PROJECT_ID}*`, {
+    cy.intercept('GET', `**/resource/${PROJECT_ID}/custom-components*`, {
       body: mockCustomComponents,
     }).as('getCustomComponents');
   });
@@ -149,6 +153,6 @@ describe('Block Builder — Quick Save version-specific rendering regression', (
 
     // Simulate a second fetchProject call (e.g. language switch) — should not re-apply the update
     // since the keys were removed after the first application
-    cy.get('[data-cy="playground"]').should('exist');
+    cy.get('[data-cy="playground"]', { timeout: 15000 }).should('exist');
   });
 });

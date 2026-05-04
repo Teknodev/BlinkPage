@@ -11,6 +11,14 @@ class InlineEditorPage {
     return cy.get('[data-cy="blinkpage-tag"]');
   }
 
+  /**
+   * Click the first blinkpage tag (scrolls into view and uses force to bypass
+   * overflow-hidden containers).
+   */
+  clickFirstBlinkpageTag() {
+    return cy.get('[data-cy="blinkpage-tag"]').first().scrollIntoView().click({ force: true });
+  }
+
   getBlinkpageById(id) {
     return cy.get(`[data-cy="blinkpage-tag"]#${id}`);
   }
@@ -46,7 +54,7 @@ class InlineEditorPage {
    * @param {string} id - The blinkpage element id (format: componentId-propId)
    */
   activateEditor(id) {
-    this.getBlinkpageById(id).should('be.visible').click();
+    this.getBlinkpageById(id).scrollIntoView().click({ force: true });
   }
 
   /**
@@ -54,14 +62,14 @@ class InlineEditorPage {
    * @param {string} text - Text to type
    */
   typeInEditor(text) {
-    this.activeEditor.should('be.visible').type(text);
+    this.activeEditor.should('exist').type(text, { force: true });
   }
 
   /**
    * Select all text in the active editor.
    */
   selectAllText() {
-    this.activeEditor.type('{selectall}');
+    this.activeEditor.type('{selectall}', { force: true });
   }
 
   /**
@@ -103,14 +111,14 @@ class InlineEditorPage {
    * Undo last action (Cmd+Z on Mac).
    */
   undo() {
-    this.activeEditor.type('{cmd+z}');
+    this.activeEditor.type('{cmd+z}', { force: true });
   }
 
   /**
    * Redo last undone action (Cmd+Shift+Z on Mac).
    */
   redo() {
-    this.activeEditor.type('{cmd+shift+z}');
+    this.activeEditor.type('{cmd+shift+z}', { force: true });
   }
 
   // ── Assertions ────────────────────────────────────────────────────

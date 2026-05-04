@@ -2,21 +2,49 @@
  * Page object for AB Testing flow builder.
  *
  * All selectors use data-cy attributes exclusively.
+ *
+ * Navigation path to reach the AB testing panel:
+ *   1. Click the page title dropdown (opens the page list menu)
+ *   2. Hover over the first page row to reveal action icons
+ *   3. Click [data-cy="ab-testing-panel-btn"] (the settings gear icon)
+ *   4. The PageSettingsModal opens at the 'main' view
+ *   5. The AB testing section ([data-cy="ab-testing-section"]) is visible on the main view
+ *   6. If the account has AB testing entitlement: "Create Your First A/B Test" leads to the flow builder
+ *   7. If not: "Upgrade" message is shown
+ *
+ * For flow-builder tests, the subscription must be stubbed via cy.intercept before loginToEditor.
  */
 export const abTestingPage = {
   // ─── Navigation ──────────────────────────────────────────────────
 
   /**
-   * Open the AB testing panel from the editor sidebar.
-   * Assumes the user is already logged in and on the editor page.
+   * Open the AB testing panel from the editor.
+   * - Opens the page dropdown
+   * - Clicks the settings gear icon ([data-cy="ab-testing-panel-btn"]) on the first page
+   * - Waits for the PageSettingsModal to render with the AB testing section
    */
   openAbTestingPanel() {
-    cy.get('[data-cy="ab-testing-panel-btn"]', { timeout: 10000 }).should('be.visible').click();
-    cy.wait(1000);
+    // Open the page dropdown by clicking the current page title
+    cy.get('[data-cy="header"]').within(() => {
+      // The page selector is the clickable slug/title in the left section
+      cy.get('[class*="currentSlug"]').first().click({ force: true });
+    });
+
+    // Wait for the page list menu to appear
+    cy.get('[data-cy="ab-testing-panel-btn"]', { timeout: 10000 })
+      .first()
+      .should('be.visible')
+      .click({ force: true });
+
+    // Wait for PageSettingsModal to open and render the AB testing section
+    cy.get('[data-cy="ab-testing-section"]', { timeout: 10000 }).should('exist');
+
+    cy.wait(500);
   },
 
   /**
    * Verify the flow builder canvas is rendered.
+   * Only works after navigating into the AB testing flow builder view.
    */
   verifyFlowBuilderVisible() {
     cy.get('[data-cy="ab-flow-canvas"]', { timeout: 10000 }).should('be.visible');

@@ -1,64 +1,58 @@
-import { createNewWebsiteBtn, loginWithValidData, signUpWithValidData, verifyTextField, webCreationFlow } from "../../support/common";
-import { continueAsGuestPage } from "../../support/pages/continueAsGuest";
-import { loginPage } from "../../support/pages/loginPage";
-import { signUpPage } from "../../support/pages/signUpPage";
+import data from '../../fixtures/data.json';
+import { loginPage } from '../../support/pages/loginPage';
+import { continueAsGuestPage } from '../../support/pages/continueAsGuest';
 
+/**
+ * Guest-user flow tests.
+ * Uses the dedicated E2E test account (blinkpage1@hotmail.com) for all login steps.
+ * No random emails are created.
+ */
 
-describe('Enter the application as a guest user', () => {
+describe('Continue as Guest', () => {
+  it('guest can proceed without an account — no web head shown', () => {
+    cy.visit('/');
+    loginPage.verifyLandingBody();
 
-    it('Create a new project as a guest→ Click Sign up  → Register with email', () => {
+    loginPage.clickProfileIcon();
+    continueAsGuestPage.continueAsGuestButton();
 
-        // 🌐 Visit the app's root page
-        cy.visit('/');
-        loginPage.verifyLandingBody();
+    // Guest landing: no project header visible yet
+    continueAsGuestPage.assertNoWebHead();
+  });
 
-        //Navigate to login page
-        loginPage.clickProfileIcon();
+  it('guest clicks login from profile icon → auth page is shown', () => {
+    cy.visit('/');
+    loginPage.clickProfileIcon();
+    continueAsGuestPage.continueAsGuestButton();
 
-        //Continue As Guest button visibility and Click
-        continueAsGuestPage.continueAsGuestButton();
+    // Click profile icon as an already-guest user
+    loginPage.clickProfileIcon();
 
-        continueAsGuestPage.assertNoWebHead();
+    cy.url().should('include', '/authentication');
+  });
 
-        createNewWebsiteBtn();
+  it('logging in with the test account after guest session → dashboard shown', () => {
+    cy.visit('/');
+    loginPage.clickProfileIcon();
+    continueAsGuestPage.continueAsGuestButton();
 
-        webCreationFlow();
+    // Navigate to login
+    loginPage.clickProfileIcon();
+    cy.url().should('include', '/authentication');
 
-        loginPage.clickProfileIcon('');
+    // Log in with the E2E test account
+    cy.get('[data-cy="input-email"]', { timeout: 10000 })
+      .should('be.visible')
+      .clear()
+      .type(data.email);
+    cy.get('[data-cy="password-input"]', { timeout: 10000 })
+      .should('be.visible')
+      .clear()
+      .type(data.password);
+    cy.get('[data-cy="signin-btn"]').should('be.visible').click();
 
-        signUpPage.singUpButton();
-
-        signUpWithValidData('shahbahram', 'shahbahram97@gmail.com', 'BlinkPage7424', 'BlinkPage7424');
-
-    });
-
-    it('Guest user creates a project→ User clicks Login→ User logs in with an existing account', () => {
-
-        // 🌐 Visit the app's root page
-        cy.visit('/');
-        loginPage.verifyLandingBody();
-
-        //Navigate to login page
-        loginPage.clickProfileIcon();
-
-        //Continue As Guest button visibility and Click
-        continueAsGuestPage.continueAsGuestButton();
-
-        continueAsGuestPage.assertNoWebHead();
-
-        createNewWebsiteBtn();
-
-        webCreationFlow();
-
-        loginPage.clickProfileIcon();
-
-        loginWithValidData('shahbahram97@gmail.com', 'BlinkPage7424');
-
-        cy.get('[data-cy="empty-projects-message"]')
-            .should('be.visible')
-            .and('contain.text', "You don't have any website yet");
-
-
-
-    });
+    // Authenticated dashboard must load
+    cy.get('[data-cy="header"]', { timeout: 30000 }).should('be.visible');
+    cy.url().should('not.include', '/authentication');
+  });
 });

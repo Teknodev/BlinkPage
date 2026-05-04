@@ -15,10 +15,15 @@
  *   - The same applies to text fields inside array container children (ChildItemEditor).
  */
 
+import { loginToEditor } from '../../support/editorTestHelper';
+
+const BB_URL = '/project/69f515295ac7bd7572f9590c/blockbuilder?component=TestComponent';
+
 describe('Block Builder — Lexical Content Tab editor regression', () => {
   beforeEach(() => {
-    cy.visit('/project/1/blockbuilder?component=TestComponent');
-    cy.get('[data-cy="bb-canvas-area"]').should('be.visible');
+    loginToEditor();
+    cy.visit(BB_URL);
+    cy.get('[data-cy="bb-canvas-area"]', { timeout: 15000 }).should('be.visible');
   });
 
   it('Content tab should render a Lexical editor (contenteditable), not a textarea, for text nodes', () => {

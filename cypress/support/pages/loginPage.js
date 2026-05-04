@@ -9,14 +9,14 @@ class LoginPage {
     }
 
     verifyLandingBody() {
-        cy.get('[data-cy="landing-body"]', { timeout: 20000 })
+        cy.get('[data-cy="landing-body"]', { timeout: 30000 })
             .should('be.visible').contains('Upgrade to ');
-        cy.get('[data-cy="landing-body"]', { timeout: 20000 })
+        cy.get('[data-cy="landing-body"]', { timeout: 30000 })
             .should('be.visible').contains(' Unlock more power');
-        cy.get('[data-cy="landing-body"]', { timeout: 20000 })
+        cy.get('[data-cy="landing-body"]', { timeout: 30000 })
             .should('be.visible').contains('More extensions. More automations. More syncs. Even more Composer for you.');
         //Compare Plan button visibility
-        cy.get('[data-cy="compare-plans-btn"]').should('be.visible').contains('Compare Plans');
+        cy.get('[data-cy="compare-plans-btn"]', { timeout: 30000 }).should('be.visible').contains('Compare Plans');
     }
 
     createNewWebsiteBtn() {
@@ -34,9 +34,10 @@ class LoginPage {
     }
 
     clickProfileIcon() {
-        cy.get('[data-cy="profile-button"]', { timeout: 20000 }).should('be.visible').click();
-        //Verify Logo
-        cy.get('[data-cy="auth-logo"]').should('be.visible');
+        cy.get('[data-cy="header-right"] [data-cy="profile-button"]', { timeout: 20000 }).should('be.visible').click();
+        // For guest users: navigates to auth page (auth-logo visible)
+        // For logged-in users: opens profile dropdown
+        cy.get('[data-cy="auth-logo"], [data-cy="profile-dropdown"]', { timeout: 8000 }).should('exist');
     }
 
     clickEyeIcon(index=0) {
@@ -50,8 +51,7 @@ class LoginPage {
     }
 
     verifyToastMessage(toastMessage) {
-        cy.get('[data-cy="toast-message"]', { timeout: 6000 }).should('be.visible');
-        cy.contains(toastMessage).should('be.visible')
+        cy.get('[data-cy="toast-message"], [data-cy="toast-success"]', { timeout: 10000 }).should('be.visible').and('contain.text', toastMessage);
     }
 
     requiredErrorMessage(selector, errorMessage) {

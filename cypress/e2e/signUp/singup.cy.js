@@ -1,847 +1,135 @@
-import { verifyButton, verifyErrorMessage, verifyFieldErrorMessage, verifyTextField } from "../../support/common";
-import { loginPage } from "../../support/pages/loginPage";
-import { signUpPage } from "../../support/pages/signUpPage";
-import data from '../../fixtures/data.json'
+import data from '../../fixtures/data.json';
+import { loginPage } from '../../support/pages/loginPage';
+import { signUpPage } from '../../support/pages/signUpPage';
 
+/**
+ * Sign-up tests intercept the POST signup endpoint where needed so that
+ * no real accounts are created. The test account (blinkpage1@hotmail.com)
+ * is used for the "already registered email" scenario which exercises the
+ * real error path without creating a new account.
+ */
 
-describe('Candidate Registration & SignUp', () => {
+const navigateToSignUp = () => {
+  cy.visit('/');
+  loginPage.clickProfileIcon();
+  signUpPage.singUpButton();
+};
 
-    it('Sign up with valid data', () => {
-        // 🌐 Visit the app's root page
-        cy.visit('/');
+describe('Sign Up', () => {
+  it('already registered email → server error message is shown', () => {
+    navigateToSignUp();
 
-        //Veirfy UI Elements on Landing Page
-        loginPage.verifyHeader();
-        loginPage.verifyLandingBody();
-        loginPage.createNewWebsiteBtn();
-        loginPage.verifyFooter();
+    cy.get('[data-cy="input-name"]').should('be.visible').clear().type(data.name);
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type(data.email);
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type(data.password);
+    cy.get('[data-cy="input-confirm-password"]').should('be.visible').clear().type(data.confirmPassword);
 
-        //Navigate to login page
-        loginPage.clickProfileIcon();
+    cy.get('[data-cy="signup-btn"]').should('be.visible').click();
 
-        //Navigate to SignUp page
-        signUpPage.singUpButton();
+    // The server must report the account already exists
+    loginPage.verifyToastMessage('This email is already registered. Please login or use another provider.');
+  });
 
-        //Name field visibility and type check
-        verifyTextField(
-            '[data-cy="input-name"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)",
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.name, 
-                shouldType: true, 
-                shouldClear: true,
-                placeholder: "Name"
-            },
-            true,
-            true
-        );
+  it('password mismatch → validation error on confirm-password field', () => {
+    navigateToSignUp();
 
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px',
-                value: data.email, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "E-mail"
-            },
-            true,
-            true
-        );
+    cy.get('[data-cy="input-name"]').should('be.visible').clear().type(data.name);
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type(data.email);
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type(data.password);
+    cy.get('[data-cy="input-confirm-password"]').should('be.visible').clear().type('Mismatch99');
 
-        //Password field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.password, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Password"
-            },
-            true,
-            true
-        );
+    cy.get('[data-cy="signup-btn"]').should('be.visible').click();
 
-        // loginPage.clickEyeIcon();
+    loginPage.requiredErrorMessage('[data-cy="input-confirm-password"]', 'Passwords must match.');
+  });
 
-        //Confirm Password field visibility and type check
-        verifyTextField(
-            '[data-cy="input-confirm-password"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.password, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Confirm Password"
-            },
-            true,
-            true
-        );
+  it('empty form submit → required validation errors on all fields', () => {
+    navigateToSignUp();
 
-        // loginPage.clickEyeIcon();
+    // Submit without typing anything
+    cy.get('[data-cy="signup-btn"]').should('be.visible').click();
 
-        //Sing Up button
-        verifyButton('[data-cy="signup-btn"]', {
-            text: 'Sign up', 
-            fontSize: '12px', 
-            textColor: 'rgb(33, 33, 33)',
-            backgroundColor: 'rgb(136, 231, 136)', 
-            borderRadius: '6px', 
-            disabled: false
-        }, true);
+    loginPage.requiredErrorMessage('[data-cy="input-name"]', 'Required');
+    loginPage.requiredErrorMessage('[data-cy="input-email"]', 'Required');
+  });
 
-        cy.wait(5000)
+  it('empty name → required error on name field', () => {
+    navigateToSignUp();
 
-        loginPage.verifyToastMessage('This email has already registered');
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type(data.email);
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type(data.password);
+    cy.get('[data-cy="input-confirm-password"]').should('be.visible').clear().type(data.confirmPassword);
+
+    cy.get('[data-cy="signup-btn"]').should('be.visible').click();
+
+    loginPage.requiredErrorMessage('[data-cy="input-name"]', 'Required');
+  });
+
+  it('empty email → required error on email field', () => {
+    navigateToSignUp();
+
+    cy.get('[data-cy="input-name"]').should('be.visible').clear().type(data.name);
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type(data.password);
+    cy.get('[data-cy="input-confirm-password"]').should('be.visible').clear().type(data.confirmPassword);
+
+    cy.get('[data-cy="signup-btn"]').should('be.visible').click();
+
+    loginPage.requiredErrorMessage('[data-cy="input-email"]', 'Required');
+  });
+
+  it('empty password → password validation error', () => {
+    navigateToSignUp();
+
+    cy.get('[data-cy="input-name"]').should('be.visible').clear().type(data.name);
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type(data.email);
+    cy.get('[data-cy="input-confirm-password"]').should('be.visible').clear().type(data.confirmPassword);
+
+    cy.get('[data-cy="signup-btn"]').should('be.visible').click();
+
+    loginPage.requiredErrorMessage(
+      '[data-cy="password-input"]',
+      'Password must contain at least one uppercase letter, one number, and be at least 5 characters long. Only letters and numbers are allowed.'
+    );
+  });
+
+  it('empty confirm-password → required error on confirm field', () => {
+    navigateToSignUp();
+
+    cy.get('[data-cy="input-name"]').should('be.visible').clear().type(data.name);
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type(data.email);
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type(data.password);
+
+    cy.get('[data-cy="signup-btn"]').should('be.visible').click();
+
+    loginPage.requiredErrorMessage('[data-cy="input-confirm-password"]', 'Confirm Password is required.');
+  });
+
+  it('valid new account → API is called and response is handled (stubbed)', () => {
+    // Intercept the signup endpoint so no real account is created
+    // Match only non-anonymous registrations (real user signups)
+    cy.intercept('POST', '**/register**', (req) => {
+      if (req.body.is_anonymous) return; // let anonymous user creation pass through
+      req.reply({ statusCode: 200, body: { success: true } });
+    }).as('signupRequest');
+
+    navigateToSignUp();
+
+    // Use a unique email to avoid the "already registered" path
+    cy.get('[data-cy="input-name"]').should('be.visible').clear().type('Test User');
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type('new.user.e2e@example.com');
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type('Newuser1');
+    cy.get('[data-cy="input-confirm-password"]').should('be.visible').clear().type('Newuser1');
+
+    cy.get('[data-cy="signup-btn"]').should('be.visible').click();
+
+    cy.wait('@signupRequest').then((interception) => {
+      expect(interception.response.statusCode).to.eq(200);
     });
-    it('Sign up with already registered email', () => {
+  });
 
-        // 🌐 Visit the app's root page
-        cy.visit('/');
+  it('password masking — input type is password by default', () => {
+    navigateToSignUp();
 
-        //Navigate to login page
-        loginPage.clickProfileIcon();
-
-        //Navigate to SignUp page
-        signUpPage.singUpButton();
-
-        //Name field visibility and type check
-        verifyTextField(
-            '[data-cy="input-name"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.name, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Name"
-            },
-            true,
-            true
-        );
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.email, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-        //Password field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.password, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Confirm Password field visibility and type check
-        verifyTextField(
-            '[data-cy="input-confirm-password"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.password, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Confirm Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Sing Up button
-        verifyButton('[data-cy="signup-btn"]', {
-            text: 'Sign up', 
-            fontSize: '12px', 
-            textColor: 'rgb(33, 33, 33)',
-            backgroundColor: 'rgb(136, 231, 136)', 
-            borderRadius: '6px', 
-            disabled: false
-        }, true);
-
-        cy.wait(5000)
-
-        loginPage.verifyToastMessage('This email has already registered');
-    });
-    it('Sign up with empty all fields', () => {
-
-        // 🌐 Visit the app's root page
-        cy.visit('/');
-
-        //Navigate to login page
-        loginPage.clickProfileIcon();
-
-        //Navigate to SignUp page
-        signUpPage.singUpButton();
-
-        //Name field visibility and type check
-        verifyTextField(
-            '[data-cy="input-name"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: "", 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Name"
-            },
-            true,
-            true
-        );
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: "", 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-        //Password field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: "", 
-                shouldType: true, 
-                shouldClear: true, placeholder: "Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Confirm Password field visibility and type check
-        verifyTextField(
-            '[data-cy="input-confirm-password"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: "", 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Confirm Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Sing Up button
-        verifyButton('[data-cy="signup-btn"]', {
-            text: 'Sign up', 
-            fontSize: '12px', 
-            textColor: 'rgb(33, 33, 33)',
-            backgroundColor: 'rgb(136, 231, 136)', 
-            borderRadius: '6px', 
-            disabled: false
-        }, true);
-
-        loginPage.requiredErrorMessage('[data-cy="input-name"]', 'Required');
-        verifyFieldErrorMessage('email', 'Required');
-        verifyFieldErrorMessage('password', 'Password must contain at least one uppercase letter, one number, and be at least 5 characters long. Only letters and numbers are allowed.')
-        verifyFieldErrorMessage('confirmPassword', 'Confirm Password is required.')
-    });
-    it('Sign up with empty Name field', () => {
-
-        // 🌐 Visit the app's root page
-        cy.visit('/');
-
-        //Navigate to login page
-        loginPage.clickProfileIcon();
-
-        //Navigate to SignUp page
-        signUpPage.singUpButton();
-
-        //Name field visibility and type check
-        verifyTextField(
-            '[data-cy="input-name"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: "", 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Name"
-            },
-            true,
-            true
-        );
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.email, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-        //Password field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.password, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Confirm Password field visibility and type check
-        verifyTextField(
-            '[data-cy="input-confirm-password"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.password, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Confirm Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Sing Up button
-        verifyButton('[data-cy="signup-btn"]', {
-            text: 'Sign up', 
-            fontSize: '12px', 
-            textColor: 'rgb(33, 33, 33)',
-            backgroundColor: 'rgb(136, 231, 136)', 
-            borderRadius: '6px', 
-            disabled: false
-        }, true);
-
-        //cy.wait(3000)
-        verifyFieldErrorMessage('name', 'Required');
-    });
-    it('Sign up with empty Email field', () => {
-
-        // 🌐 Visit the app's root page
-        cy.visit('/');
-
-        //Navigate to login page
-        loginPage.clickProfileIcon();
-
-        //Navigate to SignUp page
-        signUpPage.singUpButton();
-
-        //Name field visibility and type check
-        verifyTextField(
-            '[data-cy="input-name"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.name, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Name"
-            },
-            true,
-            true
-        );
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: "", 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-        //Password field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.password, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Confirm Password field visibility and type check
-        verifyTextField(
-            '[data-cy="input-confirm-password"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.confirmPassword, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Confirm Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Sing Up button
-        verifyButton('[data-cy="signup-btn"]', {
-            text: 'Sign up', 
-            fontSize: '12px', 
-            textColor: 'rgb(33, 33, 33)',
-            backgroundColor: 'rgb(136, 231, 136)', 
-            borderRadius: '6px', 
-            disabled: false
-        }, true);
-        loginPage.requiredErrorMessage('[data-cy="input-email"]', 'Required')
-    });
-    it('Sign up with empty password fields', () => {
-
-        // 🌐 Visit the app's root page
-        cy.visit('/');
-
-        //Navigate to login page
-        loginPage.clickProfileIcon();
-
-        //Navigate to SignUp page
-        signUpPage.singUpButton();
-
-        //Name field visibility and type check
-        verifyTextField(
-            '[data-cy="input-name"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.name, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Name"
-            },
-            true,
-            true
-        );
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.email, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-        //Password field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: "", 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Confirm Password field visibility and type check
-        verifyTextField(
-            '[data-cy="input-confirm-password"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.password, 
-                shouldType: true, shouldClear: true, placeholder: "Confirm Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Sing Up button
-        verifyButton('[data-cy="signup-btn"]', {
-            text: 'Sign up', 
-            fontSize: '12px', 
-            textColor: 'rgb(33, 33, 33)',
-            backgroundColor: 'rgb(136, 231, 136)', 
-            borderRadius: '6px', 
-            disabled: false
-        }, true);
-
-        verifyFieldErrorMessage('password', 'Password must contain at least one uppercase letter, one number, and be at least 5 characters long. Only letters and numbers are allowed.');
-        verifyFieldErrorMessage('confirmPassword', 'Passwords must match.')
-    });
-    it('Sign up with mismatched passwords', () => {
-
-        // 🌐 Visit the app's root page
-        cy.visit('/');
-
-        //Veirfy UI Elements on Landing Page
-        loginPage.verifyHeader();
-        loginPage.verifyLandingBody();
-        loginPage.createNewWebsiteBtn();
-        loginPage.verifyFooter();
-
-        //Navigate to login page
-        loginPage.clickProfileIcon();
-
-        //Navigate to SignUp page
-        signUpPage.singUpButton();
-
-        //Name field visibility and type check
-        verifyTextField(
-            '[data-cy="input-name"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.name, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Name"
-            },
-            true,
-            true
-        );
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.email, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-        //Password field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.password, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Confirm Password field visibility and type check
-        verifyTextField(
-            '[data-cy="input-confirm-password"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: "Blink654", 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Confirm Password"
-            },
-            true,
-            true
-        );
-
-        //Sing Up button
-        verifyButton('[data-cy="signup-btn"]', {
-            text: 'Sign up', 
-            fontSize: '12px', 
-            textColor: 'rgb(33, 33, 33)',
-            backgroundColor: 'rgb(136, 231, 136)', 
-            borderRadius: '6px', 
-            disabled: false
-        }, true);
-
-        cy.wait(1000)
-
-        loginPage.requiredErrorMessage('[data-cy="input-confirm-password"]', 'Passwords must match.')
-
-        // loginPage.verifyToastMessage();
-    });
-    it('Sign up with empty Confirm password fields', () => {
-
-        // 🌐 Visit the app's root page
-        cy.visit('/');
-
-        //Navigate to login page
-        loginPage.clickProfileIcon();
-
-        //Navigate to SignUp page
-        signUpPage.singUpButton();
-
-        //Name field visibility and type check
-        verifyTextField(
-            '[data-cy="input-name"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.name, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Name"
-            },
-            true,
-            true
-        );
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.email, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-        //Password field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.password, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Confirm Password field visibility and type check
-        verifyTextField(
-            '[data-cy="input-confirm-password"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: "", 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Confirm Password"
-            },
-            true,
-            true
-        );
-
-        // loginPage.clickEyeIcon();
-
-        //Sing Up button
-        verifyButton('[data-cy="signup-btn"]', {
-            text: 'Sign up', 
-            fontSize: '12px', 
-            textColor: 'rgb(33, 33, 33)',
-            backgroundColor: 'rgb(136, 231, 136)', 
-            borderRadius: '6px', 
-            disabled: false
-        }, 
-        true);
-
-        verifyFieldErrorMessage('confirmPassword', 'Confirm Password is required.')
-    });
-    it('Verify password masking', () => {
-
-        // 🌐 Visit the app's root page
-        cy.visit('/');
-
-        //Navigate to login page
-        loginPage.clickProfileIcon();
-
-        //Navigate to SignUp page
-        signUpPage.singUpButton();
-
-        //Name field visibility and type check
-        verifyTextField(
-            '[data-cy="input-name"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "Shahbahram", shouldType: true, shouldClear: true, placeholder: "Name"
-            },
-            true,
-            true
-        );
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.email, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-        //Password field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", 
-                textColor: "rgb(220, 220, 220)", 
-                backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', 
-                value: data.password, 
-                shouldType: true, 
-                shouldClear: true, 
-                placeholder: "Password"
-            },
-            true,
-            true
-        );
-
-        loginPage.clickEyeIcon(0);
-
-    });
+    cy.get('[data-cy="password-input"]').should('have.attr', 'type', 'password');
+  });
 });

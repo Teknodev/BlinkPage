@@ -20,6 +20,22 @@ import { loginToEditor, addComponent, clearPlayground, resetPlayground } from '.
 const TEST_VIDEO_URL = 'https://samplelib.com/mp4/sample-5s.mp4';
 
 /**
+ * Set the value of a React-controlled input atomically (bypasses
+ * character-by-character re-render issues with conditional rendering).
+ */
+const setReactInputValue = (selector) => {
+  cy.get(selector).then(($input) => {
+    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+      window.HTMLInputElement.prototype,
+      'value'
+    ).set;
+    nativeInputValueSetter.call($input[0], TEST_VIDEO_URL);
+    $input[0].dispatchEvent(new Event('input', { bubbles: true }));
+    $input[0].dispatchEvent(new Event('change', { bubbles: true }));
+  });
+};
+
+/**
  * Click a component section's container, switch to Design tab,
  * then expand the Background section.
  */
@@ -29,7 +45,17 @@ const openBackgroundPanel = () => {
   cy.wait(500);
 
   // Switch to the Design tab
-  cy.get('[data-cy="tab-Design"]', { timeout: 5000 }).should('be.visible').click();
+  cy.get('[data-cy="tab-DESIGN"]', { timeout: 5000 }).should('be.visible').click();
+  cy.wait(500);
+
+  // Click within the section to trigger setSelectedSection (required for CSSGUI to work)
+  cy.get('[data-component-index="0"]').within(() => {
+    cy.get('[data-cy="blinkpage-tag"]').first().click({ force: true });
+  });
+  cy.wait(500);
+
+  // Open the Background category section in the CSS GUI panel
+  cy.get('[data-cy="category-section-background"]', { timeout: 10000 }).scrollIntoView().click({ force: true });
   cy.wait(500);
 };
 
@@ -37,8 +63,9 @@ const openBackgroundPanel = () => {
  * Click the "Video" tab inside the Background section's SegmentedTab.
  */
 const switchToVideoTab = () => {
-  // SegmentedTab renders buttons with the option label text
-  cy.contains('button', 'Video').should('be.visible').click();
+  // SegmentedTab renders buttons with the option label text.
+  // The button may be clipped by an overflow-hidden panel — force click to reach it.
+  cy.contains('button', 'Video').scrollIntoView().click({ force: true });
   cy.wait(300);
 };
 
@@ -68,11 +95,9 @@ describe('Video Background - Set & Remove', () => {
     openBackgroundPanel();
     switchToVideoTab();
 
-    // Enter a video URL
-    cy.get('[data-cy="video-bg-url-input"]')
-      .should('be.visible')
-      .clear()
-      .type(TEST_VIDEO_URL);
+    // Use atomic value setter to avoid conditional-render switching mid-type
+    cy.get('[data-cy="video-bg-url-input"]').should('be.visible');
+    setReactInputValue('[data-cy="video-bg-url-input"]');
 
     cy.wait(1000);
 
@@ -93,11 +118,9 @@ describe('Video Background - Set & Remove', () => {
     openBackgroundPanel();
     switchToVideoTab();
 
-    // Set a video first
-    cy.get('[data-cy="video-bg-url-input"]')
-      .should('be.visible')
-      .clear()
-      .type(TEST_VIDEO_URL);
+    // Set a video first using atomic value setter
+    cy.get('[data-cy="video-bg-url-input"]').should('be.visible');
+    setReactInputValue('[data-cy="video-bg-url-input"]');
 
     cy.wait(1000);
 
@@ -131,11 +154,9 @@ describe('Video Background - Persistence', () => {
     openBackgroundPanel();
     switchToVideoTab();
 
-    // Set a video URL
-    cy.get('[data-cy="video-bg-url-input"]')
-      .should('be.visible')
-      .clear()
-      .type(TEST_VIDEO_URL);
+    // Set a video URL using atomic value setter
+    cy.get('[data-cy="video-bg-url-input"]').should('be.visible');
+    setReactInputValue('[data-cy="video-bg-url-input"]');
 
     cy.wait(1500);
 

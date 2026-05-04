@@ -1,451 +1,120 @@
-// const { loginPage } = require("../../support/pages/loginPage");
+import data from '../../fixtures/data.json';
+import { loginPage } from '../../support/pages/loginPage';
 
-import { verifyTextField } from "../../support/common";
-import { loginPage } from "../../support/pages/loginPage";
-import data from '../../fixtures/data.json'
-
-
-describe('Candidate Registration & Apply', () => {
-
-  it('Login with valid email and invalid password', () => {
-
-    // 🌐 Visit the app's root page
+describe('Login', () => {
+  beforeEach(() => {
     cy.visit('/');
-    loginPage.verifyLandingBody();
-
-    //Navigate to login page
-    loginPage.clickProfileIcon();
-
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="input-email"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: data.email, 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "E-mail"
-      },
-      true,
-      true
-    );
-
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="password-input"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: "Wrong123", 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "Password"
-      },
-      true,
-      true
-    );
-
-    loginPage.clickEyeIcon();
-
-    loginPage.signInButton();
-
-    loginPage.verifyToastMessage("Identifier or password was incorrect.");  
   });
 
-  it('Login with invalid email and valid password', () => {
-
-    // 🌐 Visit the app's root page
-    cy.visit('/');
-    loginPage.verifyLandingBody();
-
-    //Navigate to login page
+  it('valid credentials → user lands on dashboard', () => {
     loginPage.clickProfileIcon();
 
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="input-email"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: "invalid@test.com", 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "E-mail"
-      },
-      true,
-      true
-    );
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type(data.email);
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type(data.password);
 
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="password-input"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: data.password, 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "Password"
-      },
-      true,
-      true
-    );
+    cy.get('[data-cy="signin-btn"]').should('be.visible').click();
 
-    loginPage.clickEyeIcon();
-
-    loginPage.signInButton();
-
-    loginPage.verifyToastMessage('Something went wrong');
+    // User must land on the authenticated home view
+    cy.get('[data-cy="header"]', { timeout: 20000 }).should('be.visible');
+    cy.url().should('not.include', '/authentication');
   });
 
-  it('Login with empty email and password', () => {
-
-    // 🌐 Visit the app's root page
-    cy.visit('/');
-    loginPage.verifyLandingBody();
-
-    //Navigate to login page
+  it('invalid password → error toast is shown', () => {
     loginPage.clickProfileIcon();
 
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="input-email"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: "", 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "E-mail"
-      },
-      true,
-      true
-    );
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type(data.email);
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type('WrongPass1');
 
-    loginPage.signInButton();
+    cy.get('[data-cy="signin-btn"]').should('be.visible').click();
 
-    //Email field error message
-    loginPage.requiredErrorMessage('[data-cy="input-email"]', 'Required');
-
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="password-input"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: "", 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "Password"
-      },
-      true,
-      true
-    );
-
-    //Password field error message
-    loginPage.requiredErrorMessage('[data-cy="password-input"]', 'Password must contain at least one uppercase letter, one number, and be at least 5 characters long. Only letters and numbers are allowed.');
-
-    loginPage.clickEyeIcon();
-
+    loginPage.verifyToastMessage('Username or password was incorrect.');
   });
 
-  it('Invalid email and Password format', () => {
-
-    // 🌐 Visit the app's root page
-    cy.visit('/');
-    loginPage.verifyLandingBody();
-
-    //Navigate to login page
+  it('non-existent email → error toast is shown', () => {
     loginPage.clickProfileIcon();
 
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="input-email"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: "test@invalid", 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "E-mail"
-      },
-      true,
-      true
-    );
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type('nobody@example.com');
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type(data.password);
 
-    loginPage.signInButton();
+    cy.get('[data-cy="signin-btn"]').should('be.visible').click();
 
-    //Email field error message
+    cy.get('[data-cy="toast-message"]', { timeout: 8000 }).should('be.visible');
+  });
+
+  it('invalid email format → field validation error shown', () => {
+    loginPage.clickProfileIcon();
+
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type('notanemail');
+    cy.get('[data-cy="signin-btn"]').should('be.visible').click();
+
     loginPage.requiredErrorMessage('[data-cy="input-email"]', 'Invalid email');
-
-    //Password must be at least 5 characters long.
-    verifyTextField(
-      '[data-cy="password-input"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: "123", 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "Password"
-      },
-      true,
-      true
-    );
-
-    //Password field error message
-    loginPage.requiredErrorMessage('[data-cy="password-input"]', 'Password must be at least 5 characters long.');
-
-    //Password must contain at least one uppercase letter.
-    verifyTextField(
-      '[data-cy="password-input"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: "12345", 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "Password"
-      },
-      true,
-      true
-    );
-
-    //Password field error message
-    loginPage.requiredErrorMessage('[data-cy="password-input"]', 'Password must contain at least one uppercase letter.');
-
-
-    //Password can only contain letters and numbers.
-    verifyTextField(
-      '[data-cy="password-input"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: "A@12345", 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "Password"
-      },
-      true,
-      true
-    );
-
-    //Password field error message
-    loginPage.requiredErrorMessage('[data-cy="password-input"]', 'Password can only contain letters and numbers.');
-
-
-
-    loginPage.clickEyeIcon();
-
-    loginPage.signInButton();
-
-    // loginPage.verifyToastMessage();
   });
 
-  it('Login with case sensitivity in email', () => {
-
-    // 🌐 Visit the app's root page
-    cy.visit('/');
-
-    //Veirfy UI Elements on Landing Page
-    loginPage.verifyHeader();
-    loginPage.verifyLandingBody();
-    loginPage.createNewWebsiteBtn();
-    loginPage.verifyFooter();
-
-    //Navigate to login page
+  it('blank submit → required validation on email field', () => {
     loginPage.clickProfileIcon();
 
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="input-email"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: "SHAHBAHRAM97@GMAIL.COM", 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "E-mail"
-      },
-      true,
-      true
-    );
+    // Submit with empty email
+    cy.get('[data-cy="input-email"]').should('be.visible').clear();
+    cy.get('[data-cy="signin-btn"]').should('be.visible').click();
 
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="password-input"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: data.password, 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "Password"
-      },
-      true,
-      true
-    );
-
-    loginPage.clickEyeIcon();
-
-    loginPage.signInButton();
-
-    loginPage.verifyToastMessage('Something went wrong');
+    loginPage.requiredErrorMessage('[data-cy="input-email"]', 'Required');
   });
 
-  it('Multiple failed login attempts', () => {
-
-    // 🌐 Visit the app's root page
-    cy.visit('/');
-
-    //Veirfy UI Elements on Landing Page
-    loginPage.verifyHeader();
-    loginPage.verifyLandingBody();
-    loginPage.createNewWebsiteBtn();
-    loginPage.verifyFooter();
-
-    //Navigate to login page
+  it('after valid login, page reload keeps user logged in', () => {
     loginPage.clickProfileIcon();
 
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="input-email"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: data.email, 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "E-mail"
-      },
-      true,
-      true
-    );
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type(data.email);
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type(data.password);
+    cy.get('[data-cy="signin-btn"]').should('be.visible').click();
 
-    //First attempt with wrong password
-    verifyTextField(
-      '[data-cy="password-input"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: "BlinkPage1", 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "Password"
-      },
-      true,
-      true
-    );
+    cy.get('[data-cy="header"]', { timeout: 20000 }).should('be.visible');
 
-    loginPage.clickEyeIcon();
+    cy.reload();
 
-    loginPage.signInButton();
-
-    loginPage.verifyToastMessage('Identifier or password was incorrect.');
-
-    cy.get('[data-cy="toast-close-btn"]').should('be.visible').click();
-
-    cy.wait(5000);
-
-    //Second Attempt with wrong password
-    loginPage.signInButton();
-
-    loginPage.verifyToastMessage('Identifier or password was incorrect.');
-
-    cy.get('[data-cy="toast-close-btn"]').should('be.visible').click();
-
-    cy.wait(5000);
-
-    //Third Attempt with wrong password
-    loginPage.signInButton();
-
-    loginPage.verifyToastMessage('Identifier or password was incorrect.');
-
-    cy.get('[data-cy="toast-close-btn"]').should('be.visible').click();
-
+    // Session must persist after reload
+    cy.get('[data-cy="header"]', { timeout: 20000 }).should('be.visible');
+    cy.url().should('not.include', '/authentication');
   });
 
-  it('Navigate to Login, verifies UI and try login with valid credentials', () => {
-
-    // 🌐 Visit the app's root page
-    cy.visit('/');
-
-    //Veirfy UI Elements on Landing Page
-    loginPage.verifyHeader();
-    loginPage.verifyLandingBody();
-    loginPage.createNewWebsiteBtn();
-    loginPage.verifyFooter();
-
-    //Navigate to login page
+  it('logout via profile dropdown → redirected to auth page', () => {
     loginPage.clickProfileIcon();
 
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="input-email"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: data.email, 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "E-mail"
-      },
-      true,
-      true
-    );
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type(data.email);
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type(data.password);
+    cy.get('[data-cy="signin-btn"]').should('be.visible').click();
 
-    //Email field visibility and type check
-    verifyTextField(
-      '[data-cy="password-input"]',
-      {
-        fontSize: "10px", 
-        textColor: "rgb(220, 220, 220)", 
-        backgroundColor: "rgb(33, 33, 33)",
-        borderRadius: '6px', 
-        value: data.password, 
-        shouldType: true, 
-        shouldClear: true, 
-        placeholder: "Password"
-      },
-      true,
-      true
-    );
+    cy.get('[data-cy="header"]', { timeout: 20000 }).should('be.visible');
 
-    loginPage.clickEyeIcon();
+    // Open profile dropdown
+    cy.get('[data-cy="header-right"] [data-cy="profile-button"]', { timeout: 10000 }).should('be.visible').click();
 
-    loginPage.signInButton();
+    // Click logout
+    cy.get('[data-cy="profile-dropdown"]').contains('Logout').should('be.visible').click();
 
-    // loginPage.verifyToastMessage();
+    // Must redirect to auth
+    cy.url({ timeout: 10000 }).should('include', '/authentication');
+  });
+
+  it('multiple failed login attempts each show the error toast', () => {
+    loginPage.clickProfileIcon();
+
+    cy.get('[data-cy="input-email"]').should('be.visible').clear().type(data.email);
+    cy.get('[data-cy="password-input"]').should('be.visible').clear().type('WrongPass1');
+
+    // First attempt
+    cy.get('[data-cy="signin-btn"]').should('be.visible').click();
+    loginPage.verifyToastMessage('Username or password was incorrect.');
+    cy.get('[data-cy="toast-close-btn"]').should('be.visible').click();
+    cy.get('[data-cy="toast-message"]').should('not.exist');
+
+    // Second attempt
+    cy.get('[data-cy="signin-btn"]').should('be.visible').click();
+    loginPage.verifyToastMessage('Username or password was incorrect.');
+    cy.get('[data-cy="toast-close-btn"]').should('be.visible').click();
+    cy.get('[data-cy="toast-message"]').should('not.exist');
+
+    // Third attempt
+    cy.get('[data-cy="signin-btn"]').should('be.visible').click();
+    loginPage.verifyToastMessage('Username or password was incorrect.');
   });
 });

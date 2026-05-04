@@ -14,33 +14,42 @@
 import data from '../fixtures/data.json';
 
 /** The fixed test project URL — all editor tests share this project. */
-export const TEST_PROJECT_URL = '/project/69a67bd831a7705ee363b392/editor/0';
+export const TEST_PROJECT_URL = '/project/69f515295ac7bd7572f9590c/editor/0';
 
 /**
  * Log in and navigate straight to the test project editor.
- * Goes directly to the auth page, fills in credentials, and waits for dashboard.
+ * Uses cy.session() to cache the auth session across tests — avoids
+ * repeated login round-trips and prevents rate-limiting / session-expiry failures.
  */
 export const loginToEditor = () => {
-  // Go directly to the authentication page
-  cy.visit('/authentication');
+  cy.session(
+    'blinkpage-auth-session',
+    () => {
+      // Go directly to the authentication page
+      cy.visit('/authentication');
 
-  // Fill in the email
-  cy.get('[data-cy="email-input"]', { timeout: 10000 }).should('be.visible').clear().type(data.email);
+      // Fill in the email
+      cy.get('[data-cy="input-email"]', { timeout: 10000 }).should('be.visible').clear().type(data.email);
 
-  // Fill in the password
-  cy.get('[data-cy="password-input"]', { timeout: 10000 }).should('be.visible').clear().type(data.password);
+      // Fill in the password
+      cy.get('[data-cy="password-input"]', { timeout: 10000 }).should('be.visible').clear().type(data.password);
 
-  // Click Sign In
-  cy.get('[data-cy="signin-btn"]', { timeout: 5000 }).should('be.visible').click();
+      // Click Sign In
+      cy.get('[data-cy="signin-btn"]', { timeout: 5000 }).should('be.visible').click();
 
-  // Wait for the dashboard to fully load — proves auth token is set
-  cy.get('[data-cy="header"]', { timeout: 30000 }).should('be.visible');
+      // Wait for the dashboard to fully load — proves auth token is set
+      cy.get('[data-cy="header"]', { timeout: 30000 }).should('be.visible');
+    }
+  );
 
   // Navigate to the test project editor (auth is ready)
   cy.visit(TEST_PROJECT_URL);
 
-  // Wait for the page to be ready (canvas area visible)
-  cy.wait(2000);
+  // Wait for the editor to be fully ready:
+  // Either the canvas has components OR the empty-canvas placeholder is shown.
+  // Extended timeout (30s) to handle slow loads after block-builder sessions.
+  cy.get('[data-component-index], [data-cy="add-component-placeholder"]', { timeout: 30000 })
+    .should('exist');
 };
 
 /**
@@ -55,7 +64,27 @@ export const loginToEditor = () => {
  *   3. Clicks the component thumbnail at the given index
  *   4. Waits for the component to render on the canvas
  */
+/**
+ * Maps short human-readable aliases used in tests to the actual
+ * category key strings used in data-cy attributes (from CATEGORIES enum).
+ */
+const CATEGORY_ALIASES = {
+  hero: 'heroSection',
+  'hero-section': 'heroSection',
+  intro: 'introSection',
+  'call-to-action': 'callToAction',
+  cta: 'callToAction',
+  logo: 'logoClouds',
+  gallery: 'imageGallery',
+  'top-banner': 'topBanner',
+  'coming-soon': 'comingSoon',
+  'back-to-top': 'backToTop',
+};
+
 export const addComponent = (category, componentIndex = 0) => {
+  // Resolve any alias to the actual category key
+  const resolvedCategory = CATEGORY_ALIASES[category] || category;
+
   // Open the component picker — either click the empty-canvas placeholder
   // or click on the canvas to trigger the sidebar
   cy.get('body').then(($body) => {
@@ -73,8 +102,9 @@ export const addComponent = (category, componentIndex = 0) => {
   // Wait for the component picker sidebar to appear
   cy.get('[data-cy="component-categories"]', { timeout: 5000 }).should('be.visible');
 
-  // Click the target category
-  cy.get(`[data-cy="component-category-${category}"]`, { timeout: 10000 })
+  // Click the target category (scrollIntoView handles overflow-y clipped containers)
+  cy.get(`[data-cy="component-category-${resolvedCategory}"]`, { timeout: 10000 })
+    .scrollIntoView()
     .should('be.visible')
     .click();
 
@@ -92,7 +122,7 @@ export const addComponent = (category, componentIndex = 0) => {
  */
 export const resetPlayground = () => {
   cy.reload();
-  cy.wait(2000);
+  cy.wait(3000);
 };
 
 /**
@@ -100,7 +130,9 @@ export const resetPlayground = () => {
  * Recursively clicks each section and deletes it via the action menu.
  */
 export const clearPlayground = () => {
-  cy.wait(500);
+  // Wait for the editor canvas to be in a stable state before attempting to clear
+  cy.get('[data-component-index], [data-cy="add-component-placeholder"]', { timeout: 15000 })
+    .should('exist');
 
   const deleteNextSection = () => {
     cy.get('body').then(($body) => {

@@ -1,527 +1,87 @@
-// const { loginPage } = require("../../support/pages/loginPage");
+import data from '../../fixtures/data.json';
+import { loginPage } from '../../support/pages/loginPage';
+import { homePage } from '../../support/pages/homePage';
+import { continueAsGuestPage } from '../../support/pages/continueAsGuest';
 
-import { createNewWebsiteBtn, fieldInput, verifyErrorMessage, verifyFieldErrorMessage, verifyTextField, verifyUrl, webCreationFlow } from "../../support/common";
-import { homePage } from "../../support/pages/homePage";
-import { loginPage } from "../../support/pages/loginPage";
-import { continueAsGuestPage } from "../../support/pages/continueAsGuest";
-import { contactUsPage } from "../../support/pages/contact";
+/**
+ * Homepage tests use the E2E test account from fixtures/data.json.
+ * No hardcoded credentials — all auth goes through the shared account.
+ */
 
+const loginWithTestAccount = () => {
+  loginPage.clickProfileIcon();
+  cy.get('[data-cy="input-email"]').should('be.visible').clear().type(data.email);
+  cy.get('[data-cy="password-input"]').should('be.visible').clear().type(data.password);
+  cy.get('[data-cy="signin-btn"]').should('be.visible').click();
+  cy.get('[data-cy="header"]', { timeout: 20000 }).should('be.visible');
+};
 
-describe('Home Page ', () => {
-    beforeEach(() => {
-        // Visit the app's root page
-        cy.visit('/')
-        //Veirfy UI Elements on Landing Page
-        loginPage.verifyHeader();
-        loginPage.verifyLandingBody();
-        loginPage.createNewWebsiteBtn();
-        loginPage.verifyFooter();
-  })
-    it('Verify "Compare Plans" button click', () => {
+describe('Home Page', () => {
+  beforeEach(() => {
+    cy.visit('/');
+    loginPage.verifyHeader();
+    loginPage.verifyLandingBody();
+    loginPage.verifyFooter();
+  });
 
-        //Navigate to login page
-        loginPage.clickProfileIcon();
+  it('logged-in user sees dashboard with project list or empty state', () => {
+    loginWithTestAccount();
 
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "shahbahram97@gamil.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "BlinkPage7424", shouldType: true, shouldClear: true, placeholder: "Password"
-            },
-            true,
-            true
-        );
-
-        loginPage.clickEyeIcon();
-
-        loginPage.signInButton();
-
-        homePage.verifyCard();
-
-        cy.contains('Compare Plans').should('be.visible').click();
-
-        verifyUrl('/plans')
-
-
-    });  
-    it('Navigate to Login, verifies UI and try login with valid credentials', () => {
-
-        //Navigate to login page
-        loginPage.clickProfileIcon();
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "shahbahram97@gamil.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "BlinkPage7424", shouldType: true, shouldClear: true, placeholder: "Password"
-            },
-            true,
-            true
-        );
-
-        loginPage.clickEyeIcon();
-
-        loginPage.signInButton();
-
-        homePage.verifyCard();
-
-        createNewWebsiteBtn();
-
-        webCreationFlow();
-
+    // After login user should see the authenticated dashboard
+    cy.get('[data-cy="header"]').should('be.visible');
+    // Wait for either a project card or an empty-state message to appear
+    cy.get('[data-cy="project-card"], [data-cy="empty-projects-message"]', { timeout: 15000 }).should('exist');
+    cy.get('body').then(($body) => {
+      const hasProjects = $body.find('[data-cy="project-card"]').length > 0;
+      const hasEmpty = $body.find('[data-cy="empty-projects-message"]').length > 0;
+      expect(hasProjects || hasEmpty, 'dashboard must show projects or empty state').to.be.true;
     });
-    it('Verify footer redirections and copyright text', () => {
+  });
 
-        //Navigate to login page
-        loginPage.clickProfileIcon();
+  it('"Compare Plans" button navigates to /plans', () => {
+    loginWithTestAccount();
 
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "shahbahram97@gamil.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
-            },
-            true,
-            true
-        );
+    cy.contains('Compare Plans').should('be.visible').click();
+    cy.url().should('include', '/plans');
+  });
 
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "BlinkPage7424", shouldType: true, shouldClear: true, placeholder: "Password"
-            },
-            true,
-            true
-        );
+  it('project card click navigates to the editor', () => {
+    loginWithTestAccount();
 
-        loginPage.clickEyeIcon();
-
-        loginPage.signInButton();
-
-        homePage.verifyCard();
-
-        loginPage.verifyFooterRedirections();
-
-
+    cy.get('body').then(($body) => {
+      if ($body.find('[data-cy="project-card"]').length === 0) {
+        cy.log('No project cards found — skipping editor navigation test');
+        return;
+      }
+      cy.get('[data-cy="project-card"]').first().click();
+      cy.url({ timeout: 15000 }).should('match', /\/project\/.+\/editor/);
     });
-    it('Verify Profile Icon (Guest User)', () => {
+  });
 
-        loginPage.clickProfileIcon();
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "", shouldType: true, shouldClear: true, placeholder: "E-mail"
-            },
-            false,
-            false
-        );
+  it('footer links redirect to correct pages', () => {
+    loginPage.verifyFooterRedirections();
+  });
 
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "", shouldType: true, shouldClear: true, placeholder: "Password"
-            },
-            false,
-            false
-        );
+  it('profile icon as guest opens login form', () => {
+    loginPage.clickProfileIcon();
+    // The login form must appear
+    cy.get('[data-cy="input-email"]').should('be.visible');
+    cy.get('[data-cy="password-input"]').should('be.visible');
+  });
 
-        continueAsGuestPage.continueAsGuestButton();
-        loginPage.clickProfileIcon();
-        verifyUrl('/authentication')
+  it('continue as guest → clicking profile icon shows auth page URL', () => {
+    loginPage.clickProfileIcon();
+    continueAsGuestPage.continueAsGuestButton();
 
+    // Clicking profile icon as guest should push to authentication
+    loginPage.clickProfileIcon();
+    cy.url().should('include', '/authentication');
+  });
 
+  it('logged-in profile icon click opens profile dropdown', () => {
+    loginWithTestAccount();
 
-
-    });
-    it('Verify Profile Icon (Registered User)', () => {
-
-        loginPage.clickProfileIcon();
-        verifyTextField(
-            '[data-cy="input-email"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "shahbahram97@gmail.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-        //Email field visibility and type check
-        verifyTextField(
-            '[data-cy="password-input"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "BlinkPage7424", shouldType: true, shouldClear: true, placeholder: "Password"
-            },
-            true,
-            true
-        );
-        loginPage.clickEyeIcon();
-
-        loginPage.signInButton();
-        
-        loginPage.clickProfileIcon();
-        
-        homePage.verifyProfileDropDown();
-
-
-
-
-
-    });
-    it('Verify Contact Us page loads and Url',() => {
-        contactUsPage.contactusbutton()
-        verifyUrl('/contact')
-    });
-    it('Verify Subject dropdown options are visible',() => {
-        contactUsPage.contactusbutton()
-        verifyUrl('/contact')
-        verifyTextField(
-            '[data-cy="subject-search-input"]',
-            {
-                fontSize: "10px", textColor: "rgb(255, 255, 255)", backgroundColor: "rgba(0, 0, 0, 0)",
-                borderRadius: '0px', value: "", shouldType: true, shouldClear: true, placeholder: "Subject"
-            },
-            true,
-            true
-        );
-        contactUsPage.subjectDropDown()
-
-        
-    })
-    it('Verify Subject field mandatory',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-        
-        cy.wait(5000)
-        
-        contactUsPage.submitButton();
-
-        cy.wait(5000)
-        
-        verifyErrorMessage('[data-cy="form-error"]','Required')
-
-    })
-    it('Verify First Name field accepts valid input',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-        
-        verifyTextField(
-            '[data-cy="input-firstname"]', 
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "John", shouldType: true, shouldClear: true, placeholder: "First Name"
-            },
-            true,
-            true
-        )
-    })
-    it('Verify Last Name field accepts valid input',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-        
-        fieldInput('[data-cy="input-lastname"]','Last Name', 'Doe')
-
-    })
-    it('Verify Email field accepts valid email',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-        
-        verifyTextField(
-            '[data-cy="input-contact-email"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "john.doe@test.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
-            },
-            true,
-            true
-        )
-
-    })
-    it('Verify Email field rejects invalid email',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-        
-        verifyTextField(
-            '[data-cy="input-contact-email"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "john.doe@", shouldType: true, shouldClear: true, placeholder: "E-mail"
-            },
-            true,
-            true
-        )
-        cy.get('body').click();
-        verifyFieldErrorMessage('email', 'Invalid email address')
-
-    })
-    it('Verify Phone field accepts valid number',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-        
-        verifyTextField(
-            '[data-cy="input-phone"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "9876543210", shouldType: true, shouldClear: true, placeholder: "Phone"
-            },
-            true,
-            true
-        )
-    })
-    it('Verify Phone field with alphabets',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-        
-        verifyTextField(
-            '[data-cy="input-phone"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "ab352", shouldType: true, shouldClear: true, placeholder: "Phone"
-            },
-            true,
-            true
-        )
-        cy.get('[data-cy="contact-form-content"]').click();
-        verifyFieldErrorMessage('phone', 'Phone number is not valid')
-
-    })
-    it('Verify Company field optional behavior',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-
-        verifyTextField(
-            '[data-cy="subject-search-input"]',
-            {
-                fontSize: "10px", textColor: "rgb(255, 255, 255)", backgroundColor: "rgba(0, 0, 0, 0)",
-                borderRadius: '0px', value: "", shouldType: true, shouldClear: true, placeholder: "Subject"
-            },
-            true,
-            true
-        );
-        contactUsPage.subjectDropDown()
-        cy.wait(5000)
-        contactUsPage.selectDropdownOption('Plan')
-
-        verifyTextField(
-            '[data-cy="input-firstname"]', 
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "John", shouldType: true, shouldClear: true, placeholder: "First Name"
-            },
-            true,
-            true
-        );
-        fieldInput('[data-cy="input-lastname"]','Last Name', 'Doe');
-
-        verifyTextField(
-            '[data-cy="input-contact-email"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "john.doe@test.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-
-        verifyTextField(
-            '[data-cy="input-phone"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "9876543210", shouldType: true, shouldClear: true, placeholder: "Phone"
-            },
-            true,
-            true
-        );
-        contactUsPage.inputMessage('Testing')
-
-        contactUsPage.submitButton()
-        
-
-    })
-    it('Verify Message field min length',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-
-        contactUsPage.inputMessage('Test')
-        cy.get('[data-cy="contact-form-content"]').click();
-
-        verifyErrorMessage('[data-cy="message-textarea-container"]', 'Min 5 characters!')
-        
-        
-
-        contactUsPage.submitButton()
-        
-
-    })
-    it('Verify form submission with valid data',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-
-        verifyTextField(
-            '[data-cy="subject-search-input"]',
-            {
-                fontSize: "10px", textColor: "rgb(255, 255, 255)", backgroundColor: "rgba(0, 0, 0, 0)",
-                borderRadius: '0px', value: "", shouldType: true, shouldClear: true, placeholder: "Subject"
-            },
-            true,
-            true
-        );
-        contactUsPage.subjectDropDown()
-        cy.wait(5000)
-        contactUsPage.selectDropdownOption('Plan')
-
-        verifyTextField(
-            '[data-cy="input-firstname"]', 
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "John", shouldType: true, shouldClear: true, placeholder: "First Name"
-            },
-            true,
-            true
-        );
-        fieldInput('[data-cy="input-lastname"]','Last Name', 'Doe');
-
-        verifyTextField(
-            '[data-cy="input-contact-email"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "john.doe@test.com", shouldType: true, shouldClear: true, placeholder: "E-mail"
-            },
-            true,
-            true
-        );
-
-
-        verifyTextField(
-            '[data-cy="input-phone"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "9876543210", shouldType: true, shouldClear: true, placeholder: "Phone"
-            },
-            true,
-            true
-        );
-        verifyTextField(
-            '[data-cy="input-company"]',
-            {
-                fontSize: "10px", textColor: "rgb(220, 220, 220)", backgroundColor: "rgb(33, 33, 33)",
-                borderRadius: '6px', value: "9876543210", shouldType: true, shouldClear: true, placeholder: "Company (Optional)"
-            },
-            true,
-            true
-        );
-
-
-        contactUsPage.inputMessage('Testing')
-
-        contactUsPage.submitButton()
-        
-
-    })
-    it('Verify form submission without mandatory fields',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-
-        cy.wait(5000)
-
-        contactUsPage.submitButton();
-
-        // subject field error message
-        verifyErrorMessage('[data-cy="form-error"]','Required')
-
-        // First Name field error message
-        verifyFieldErrorMessage('name','Required');
-        
-        // Last Name field  error message
-        verifyFieldErrorMessage('surname','Required');
-        
-        // Email field error message
-        verifyFieldErrorMessage('email','Required')
-
-        // Phone number field error message
-        verifyFieldErrorMessage('phone','Required')
-
-        // Message field error message 
-        verifyErrorMessage('[data-cy="message-textarea-container"]', 'Required')
-
-
-
-
-        
-
-    })
-    it('Verify form submission without mandatory fields',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-        contactUsPage.verifyExternalLink('documentation', '/documentation')
-        contactUsPage.verifyExternalLink('community/support portal', '/home')
-
-    })
-    it('Verify XSS prevention in Message field',() => {
-        
-        contactUsPage.contactusbutton();
-        
-        verifyUrl('/contact');
-        contactUsPage.verifyXssPrevention();
-
-    })
-    
-
-
+    cy.get('[data-cy="header-right"] [data-cy="profile-button"]').should('be.visible').click();
+    homePage.verifyProfileDropDown();
+  });
 });

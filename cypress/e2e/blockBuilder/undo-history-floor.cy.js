@@ -15,10 +15,15 @@
  * empty canvas or a state with missing meta.
  */
 
+import { loginToEditor } from '../../support/editorTestHelper';
+
+const BB_URL = '/project/69f515295ac7bd7572f9590c/blockbuilder?component=TestComponent';
+
 describe('Block Builder — Undo history floor regression', () => {
   beforeEach(() => {
-    cy.visit('/project/1/blockbuilder?component=TestComponent');
-    cy.get('[data-cy="bb-canvas-area"]').should('be.visible');
+    loginToEditor();
+    cy.visit(BB_URL);
+    cy.get('[data-cy="bb-canvas-area"]', { timeout: 15000 }).should('be.visible');
   });
 
   it('undo should not go past the initial loaded state (cannot reach empty canvas)', () => {
