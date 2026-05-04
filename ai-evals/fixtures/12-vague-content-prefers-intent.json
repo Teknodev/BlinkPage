@@ -1,0 +1,11 @@
+{
+  "id": "vague-content-prefers-intent",
+  "prompt": "Change my about us content. We are a roof repairing company located in Canada / Toronto. We are only serving to high-ticket projects and villas.",
+  "context": { "project_id": "AI_EVAL_ABOUT", "page_id": "AI_EVAL_ABOUT_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["regenerate_section_text"],
+  "forbidden_tools": ["ct_set_text", "ct_set_prop"],
+  "max_iterations": 4,
+  "max_cost_usd": 0.05,
+  "dry_run": true,
+  "notes": "Reproducer for the bug that drove this plan. With intent-first prompting, the model should pick regenerate_section_text and rewrite all string leaves atomically — never falling into the ct_set_text loop."
+}

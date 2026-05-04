@@ -1,57 +1,41 @@
-import { forgotPasswordModal, verifyTextField } from "../../support/common";
-import { loginPage } from "../../support/pages/loginPage";
-
+import { forgotPasswordModal } from '../../support/common';
+import { loginPage } from '../../support/pages/loginPage';
+import data from '../../fixtures/data.json';
 
 describe('Forgot Password', () => {
-
-  it('Forgot password with registered email', () => {
-
-    // 🌐 Visit the app's root page
+  beforeEach(() => {
     cy.visit('/');
     loginPage.verifyLandingBody();
-
-    //Navigate to login page
     loginPage.clickProfileIcon();
-
-    //Click Forgot Password button
     loginPage.forgotPasswordButton();
-
-    forgotPasswordModal('shahbahram97@gmail.com');
-
-    loginPage.verifyToastMessage("We send a recovery mail. Please follow the instructions to recover your password.");  
   });
 
-  it('Forgot password with unregistered email', () => {
+  it('registered email → success confirmation message is shown', () => {
+    // Use the dedicated E2E test account
+    forgotPasswordModal(data.email);
 
-    // 🌐 Visit the app's root page
-    cy.visit('/');
-    loginPage.verifyLandingBody();
-
-    //Navigate to login page
-    loginPage.clickProfileIcon();
-
-    //Click Forgot Password button
-    loginPage.forgotPasswordButton();
-
-    forgotPasswordModal('shah@gmail.com');
-
-    loginPage.verifyToastMessage("Email not found");  
+    loginPage.verifyToastMessage(
+      'We send a recovery mail. Please follow the instructions to recover your password.'
+    );
   });
 
-  it.only('Forgot password with invalid email', () => {
+  it('unregistered email → server error message is shown', () => {
+    forgotPasswordModal('nobody.e2e.test@example.com');
 
-    // 🌐 Visit the app's root page
-    cy.visit('/');
-    loginPage.verifyLandingBody();
+    loginPage.verifyToastMessage('Email not found');
+  });
 
-    //Navigate to login page
-    loginPage.clickProfileIcon();
+  it('invalid email format → validation error shown before submit', () => {
+    // Type an invalid email and attempt recovery
+    cy.contains('Password Recovery', { timeout: 5000 }).should('be.visible');
+    cy.get('[data-cy="input-forgot-email"]').should('be.visible').type('notvalid.com');
+    cy.contains('button', 'Recover').should('be.visible').click();
 
-    //Click Forgot Password button
-    loginPage.forgotPasswordButton();
-
-    forgotPasswordModal('shah.com');
-
-    // loginPage.verifyToastMessage("Email not found");  
+    // The form should show a validation error — no toast expected
+    cy.get('[data-cy="input-forgot-email"]')
+      .closest('div')
+      .within(() => {
+        cy.contains(/invalid|required|email/i).should('be.visible');
+      });
   });
 });

@@ -1,0 +1,39 @@
+name: AI Evals
+
+on:
+  pull_request:
+    paths:
+      - 'spica-frontend-composer/function/69bd00000000000000000007/**'
+      - 'landing-composer/src/prefabs/ai-assistant/**'
+      - 'landing-composer/src/services/AiTools.ts'
+      - 'landing-composer-tests/ai-evals/**'
+  schedule:
+    # Nightly at 03:00 UTC — catches drift caused by OpenAI model updates.
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  ai-evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: landing-composer-tests/ai-evals
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: yarn install --frozen-lockfile || yarn install
+      - name: Run AI evals
+        env:
+          SPICA_URL: ${{ secrets.SPICA_STAGING_URL }}
+          SPICA_TOKEN: ${{ secrets.SPICA_STAGING_ADMIN_TOKEN }}
+          AI_EVAL_OUT: results.json
+        run: yarn ai-evals
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-evals-results
+          path: landing-composer-tests/ai-evals/results.json

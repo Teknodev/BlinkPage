@@ -1,0 +1,14 @@
+{
+  "name": "blinkpage-ai-evals",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Regression eval harness for the Blinkpage AI Assistant. Runs fixture prompts against staging Spica's /ai/chat endpoint and asserts expected tool sequences and project diffs.",
+  "type": "module",
+  "scripts": {
+    "ai-evals": "node runner.js",
+    "ai-evals:seed": "node seed/seed-projects.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "regenerate-about-content",
+  "prompt": "Rewrite my about section. We are a roof repairing company in Toronto serving high-ticket projects and villas. Make the tone professional.",
+  "context": { "project_id": "AI_EVAL_ABOUT", "page_id": "AI_EVAL_ABOUT_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["pb_set_active_page", "pb_list_sections", "regenerate_section_text"],
+  "expected_diff": { "changed_section_indices": [0], "props_paths_modified": ["sectionTitle", "items.0.description"] },
+  "max_iterations": 6,
+  "max_cost_usd": 0.05,
+  "dry_run": true
+}

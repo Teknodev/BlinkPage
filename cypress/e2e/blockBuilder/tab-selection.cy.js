@@ -1,6 +1,12 @@
+import { loginToEditor } from '../../support/editorTestHelper';
+
+const BB_URL = '/project/69f515295ac7bd7572f9590c/blockbuilder?component=TestComponent';
+
 describe('Playground Element Selection Across Tabs', () => {
   beforeEach(() => {
-    cy.visit('/project/1/blockbuilder?component=TestComponent');
+    loginToEditor();
+    cy.visit(BB_URL);
+    cy.get('[data-cy="bb-canvas-area"]', { timeout: 15000 }).should('be.visible');
   });
 
   it('should successfully select an element while in the Design tab, verifying the stale closure regression is fixed', () => {

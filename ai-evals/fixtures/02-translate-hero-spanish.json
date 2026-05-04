@@ -1,0 +1,10 @@
+{
+  "id": "translate-hero-spanish",
+  "prompt": "Translate the hero section to Spanish.",
+  "context": { "project_id": "AI_EVAL_MULTILINGUAL", "page_id": "AI_EVAL_MULTILINGUAL_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["pb_list_sections", "translate_section"],
+  "expected_diff": {},
+  "max_iterations": 5,
+  "max_cost_usd": 0.05,
+  "dry_run": true
+}

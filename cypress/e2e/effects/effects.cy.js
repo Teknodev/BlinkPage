@@ -21,12 +21,22 @@ import { loginToEditor, addComponent, clearPlayground, resetPlayground } from '.
  * and scroll to the Effects category section.
  */
 const openEffectsPanel = () => {
-  // Click the first component section to select it
+  // Click the first component section to select it (sets editingElement)
   cy.get('[data-component-index="0"]', { timeout: 10000 }).click({ force: true });
   cy.wait(500);
 
   // Switch to the Design tab in the right settings panel
-  cy.get('[data-cy="tab-Design"]', { timeout: 5000 }).should('be.visible').click();
+  // PB editor tabs use uppercase labels: CONTENT, DESIGN, INTERACTIONS
+  cy.get('[data-cy="tab-DESIGN"]', { timeout: 5000 }).should('be.visible').click();
+  cy.wait(500);
+
+  // Click a child element inside the section now that the DESIGN tab is active.
+  // traverseDomAndSetSection() fires on mousedown when DESIGN tab is active and resolves
+  // the CSS class key to set selectedSection. Clicking on [data-cy="blinkpage-tag"]
+  // targets a text element inside the component, which has a valid decorateCSS class.
+  cy.get('[data-component-index="0"]').within(() => {
+    cy.get('[data-cy="blinkpage-tag"]').first().click({ force: true });
+  });
   cy.wait(500);
 
   // The Effects panel should be present inside the Design tab
@@ -71,9 +81,9 @@ describe('Effects - Add & Remove', () => {
     // No effect rows initially
     cy.get('[data-cy^="effect-row-"]').should('not.exist');
 
-    // Add Fade Out
+    // Add Fade Out — force: true because the item is inside a MUI Menu portal
     cy.get('[data-cy="add-effect-btn"]').click();
-    cy.get('[data-cy="effect-picker-fadeOut"]').click();
+    cy.get('[data-cy="effect-picker-fadeOut"]', { timeout: 5000 }).should('be.visible').click({ force: true });
 
     // Effect row should appear
     cy.get('[data-cy="effect-row-fadeOut"]', { timeout: 5000 }).should('be.visible');
@@ -85,11 +95,11 @@ describe('Effects - Add & Remove', () => {
 
     // Add an effect first
     cy.get('[data-cy="add-effect-btn"]').click();
-    cy.get('[data-cy="effect-picker-glass"]').click();
+    cy.get('[data-cy="effect-picker-glass"]', { timeout: 5000 }).should('be.visible').click({ force: true });
     cy.get('[data-cy="effect-row-glass"]', { timeout: 5000 }).should('be.visible');
 
     // Remove it
-    cy.get('[data-cy="effect-remove-glass"]').click();
+    cy.get('[data-cy="effect-remove-glass"]').click({ force: true });
     cy.get('[data-cy="effect-row-glass"]').should('not.exist');
 
     // Add button should still be available
@@ -101,7 +111,7 @@ describe('Effects - Add & Remove', () => {
 
     // Add Windowed
     cy.get('[data-cy="add-effect-btn"]').click();
-    cy.get('[data-cy="effect-picker-windowed"]').click();
+    cy.get('[data-cy="effect-picker-windowed"]', { timeout: 5000 }).should('be.visible').click({ force: true });
     cy.get('[data-cy="effect-row-windowed"]', { timeout: 5000 }).should('be.visible');
 
     // Open picker again — Windowed should no longer be listed
@@ -119,17 +129,17 @@ describe('Effects - Add & Remove', () => {
 
     // Add first effect
     cy.get('[data-cy="add-effect-btn"]').click();
-    cy.get('[data-cy="effect-picker-fadeOut"]').click();
+    cy.get('[data-cy="effect-picker-fadeOut"]', { timeout: 5000 }).should('be.visible').click({ force: true });
     cy.get('[data-cy="effect-row-fadeOut"]', { timeout: 5000 }).should('be.visible');
 
     // Add second effect
     cy.get('[data-cy="add-effect-btn"]').click();
-    cy.get('[data-cy="effect-picker-glass"]').click();
+    cy.get('[data-cy="effect-picker-glass"]', { timeout: 5000 }).should('be.visible').click({ force: true });
     cy.get('[data-cy="effect-row-glass"]', { timeout: 5000 }).should('be.visible');
 
     // Add third effect
     cy.get('[data-cy="add-effect-btn"]').click();
-    cy.get('[data-cy="effect-picker-windowed"]').click();
+    cy.get('[data-cy="effect-picker-windowed"]', { timeout: 5000 }).should('be.visible').click({ force: true });
     cy.get('[data-cy="effect-row-windowed"]', { timeout: 5000 }).should('be.visible');
 
     // All three should be visible
@@ -158,7 +168,7 @@ describe('Effects - Configuration', () => {
 
     // Add Fade Out (has direction variable)
     cy.get('[data-cy="add-effect-btn"]').click();
-    cy.get('[data-cy="effect-picker-fadeOut"]').click();
+    cy.get('[data-cy="effect-picker-fadeOut"]', { timeout: 5000 }).should('be.visible').click({ force: true });
     cy.get('[data-cy="effect-row-fadeOut"]', { timeout: 5000 }).should('be.visible');
 
     // Config (gear) button should exist
@@ -170,11 +180,11 @@ describe('Effects - Configuration', () => {
 
     // Add Glass effect (has blur + tint variables)
     cy.get('[data-cy="add-effect-btn"]').click();
-    cy.get('[data-cy="effect-picker-glass"]').click();
+    cy.get('[data-cy="effect-picker-glass"]', { timeout: 5000 }).should('be.visible').click({ force: true });
     cy.get('[data-cy="effect-row-glass"]', { timeout: 5000 }).should('be.visible');
 
     // Click config
-    cy.get('[data-cy="effect-config-glass"]').click();
+    cy.get('[data-cy="effect-config-glass"]').click({ force: true });
 
     // Popover should show variable labels
     cy.contains('Blur', { timeout: 5000 }).should('be.visible');

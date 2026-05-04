@@ -15,3 +15,6 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+
+// Import cypress-drag-drop globally so all test files can use .drag()
+import '@4tw/cypress-drag-drop'

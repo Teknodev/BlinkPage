@@ -1,0 +1,10 @@
+{
+  "id": "prop-path-with-props-prefix",
+  "prompt": "Set the about subtitle to 'Our Mission'.",
+  "context": { "project_id": "AI_EVAL_ABOUT", "page_id": "AI_EVAL_ABOUT_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["ct_set_text"],
+  "max_iterations": 5,
+  "max_cost_usd": 0.04,
+  "dry_run": true,
+  "notes": "If the model emits prop_path with a 'props.' prefix, the auto-fix shim normalizes it. The fixture passes whether the model gets the path right OR the shim corrects it; either way the result is ok and the tool sequence reaches ct_set_text."
+}

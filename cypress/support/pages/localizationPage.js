@@ -9,7 +9,7 @@ class LocalizationPage {
 
   /** The localization settings icon / button in the right sidebar */
   get localizationIcon() {
-    return cy.get('[data-cy="localization-icon"]', { timeout: 10000 });
+    return cy.get('[data-cy="toolbar-icon-localization"]', { timeout: 10000 });
   }
 
   /** The localization settings panel (once opened) */
@@ -31,9 +31,18 @@ class LocalizationPage {
 
   /**
    * Open the localization settings panel from the right sidebar.
+   * Clicks the toolbar icon to open the WMenu, then clicks the Edit icon
+   * to navigate to the full localization-settings-page route.
    */
   openLocalizationSettings() {
     this.localizationIcon.should('be.visible').click();
+    // Wait for the LocalizationManager WMenu to open
+    cy.wait(500);
+    // Click the Edit icon (navigates to /localization route)
+    cy.get('[data-cy="localization-edit-btn"]', { timeout: 5000 }).click({ force: true });
+    cy.wait(500);
+    // Wait for the localization settings page route to render
+    cy.get('[data-cy="localization-settings-page"]', { timeout: 15000 }).should('exist');
   }
 
   /**

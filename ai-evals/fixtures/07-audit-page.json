@@ -1,0 +1,9 @@
+{
+  "id": "audit-page",
+  "prompt": "Is this page good for SEO and accessibility?",
+  "context": { "project_id": "AI_EVAL_ABOUT", "page_id": "AI_EVAL_ABOUT_INDEX", "locale": "en" },
+  "expected_tool_sequence": ["audit_page"],
+  "max_iterations": 3,
+  "max_cost_usd": 0.03,
+  "dry_run": true
+}
