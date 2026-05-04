@@ -89,7 +89,7 @@ class LocalizationPage {
    * Close the localization settings panel.
    */
   closeSettings() {
-    cy.get('[data-cy="localization-close-btn"]').click();
+    cy.get('[data-cy="modal-close-btn"]').click();
   }
 
   // ── Assertions ────────────────────────────────────────────────────────
