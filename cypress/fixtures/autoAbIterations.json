@@ -1,0 +1,77 @@
+[
+  {
+    "_id": "iter-003",
+    "iteration_number": 3,
+    "ab_test": "test-auto-loop-001",
+    "base_page": "page-auto-ab-001",
+    "challenger_page": "page-challenger-003",
+    "winner_page": "page-challenger-003",
+    "winner_variant": "v-challenger-003",
+    "challenger_variants": ["v-challenger-003"],
+    "hypothesis_snapshot": "Iteration #3 — shorter CTA copy",
+    "changes_made": [
+      { "scope": "text", "target": "cta-button", "description": "Shortened CTA label" }
+    ],
+    "base_visitors": 200,
+    "base_conversions": 24,
+    "challenger_visitors": 198,
+    "challenger_conversions": 36,
+    "improvement_pct": 51.5,
+    "confidence": 95.2,
+    "total_sample_size": 398,
+    "started_at": "2026-05-01T10:00:00.000Z",
+    "decided_at": "2026-05-03T09:00:00.000Z",
+    "status": "applied",
+    "llm_reasoning": "Challenger had statistically significant lift; shorter CTA reduced cognitive load."
+  },
+  {
+    "_id": "iter-002",
+    "iteration_number": 2,
+    "ab_test": "test-auto-loop-001",
+    "base_page": "page-auto-ab-001",
+    "challenger_page": "page-challenger-002",
+    "winner_page": null,
+    "winner_variant": null,
+    "challenger_variants": ["v-challenger-002"],
+    "hypothesis_snapshot": "Iteration #2 — bolder hero color",
+    "changes_made": [
+      { "scope": "style", "target": "hero", "description": "Bolder hero background" }
+    ],
+    "base_visitors": 180,
+    "base_conversions": 18,
+    "challenger_visitors": 175,
+    "challenger_conversions": 16,
+    "improvement_pct": -10.6,
+    "confidence": 62.0,
+    "total_sample_size": 355,
+    "started_at": "2026-04-25T10:00:00.000Z",
+    "decided_at": "2026-04-27T11:00:00.000Z",
+    "status": "decided",
+    "llm_reasoning": "Insufficient lift; reverted to base."
+  },
+  {
+    "_id": "iter-001",
+    "iteration_number": 1,
+    "ab_test": "test-auto-loop-001",
+    "base_page": "page-auto-ab-001",
+    "challenger_page": "page-challenger-001",
+    "winner_page": "page-challenger-001",
+    "winner_variant": "v-challenger-001",
+    "challenger_variants": ["v-challenger-001"],
+    "hypothesis_snapshot": "Iteration #1 — concise headline",
+    "changes_made": [
+      { "scope": "text", "target": "hero-headline", "description": "Tightened hero copy" }
+    ],
+    "base_visitors": 120,
+    "base_conversions": 12,
+    "challenger_visitors": 115,
+    "challenger_conversions": 18,
+    "improvement_pct": 56.5,
+    "confidence": 91.5,
+    "total_sample_size": 235,
+    "started_at": "2026-04-18T08:00:00.000Z",
+    "decided_at": "2026-04-20T09:00:00.000Z",
+    "status": "applied",
+    "llm_reasoning": "Challenger had higher conversion rate at confidence > 90%."
+  }
+]
