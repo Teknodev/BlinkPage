@@ -257,7 +257,7 @@ describe('Localization - Element Selection Persistence', () => {
     // Close the localization settings overlay
     cy.get('[data-cy="localization-settings-page"]', { timeout: 5000 }).then(($panel) => {
       if ($panel.length > 0) {
-        cy.get('[data-cy="localization-close-btn"]').first().click({ force: true });
+        cy.get('[data-cy="modal-close-btn"]').first().click({ force: true });
         cy.wait(500);
       }
     });
@@ -302,7 +302,7 @@ describe('Localization - Nested String Live Updates', () => {
         cy.get('[data-cy="l10n-cell-editor"], .rdg-text-editor, input, textarea').last().clear().type('Nested Update Test{enter}');
         cy.wait(500);
 
-        cy.get('[data-cy="localization-close-btn"]').first().click({ force: true });
+        cy.get('[data-cy="modal-close-btn"]').first().click({ force: true });
         cy.wait(500);
 
         cy.get('[data-cy="playground"]').should('contain.text', 'Nested Update Test');
