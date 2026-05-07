@@ -1,0 +1,89 @@
+{
+  "running_recommend": {
+    "tests": [
+      {
+        "id": "test-auto-loop-001",
+        "name": "Auto-AB Loop — recommend mode",
+        "status": "running",
+        "auto_ab_enabled": true,
+        "auto_ab_status": "deciding",
+        "current_iteration": 2,
+        "current_sample_visitors": 100,
+        "auto_ab_config": {
+          "risk_level": "medium",
+          "decision_sample_amount": 100,
+          "min_sample_size": 100,
+          "winner_action": "recommend",
+          "scope": ["text"],
+          "hypothesis": "Shorter CTA copy converts better.",
+          "conversion_goal_interaction_id": "conv-1"
+        },
+        "winner_variant_id": "v-challenger-002",
+        "variants": [
+          { "_id": "v-control-001", "isPrimary": true, "name": "Variant 1" },
+          { "_id": "v-challenger-002", "isPrimary": false, "name": "AI Variant #2" }
+        ],
+        "visitors": 100,
+        "statisticalSignificance": 92,
+        "startedDate": "2026-04-18T08:00:00.000Z"
+      }
+    ]
+  },
+  "running_sampling_auto_apply": {
+    "tests": [
+      {
+        "id": "test-auto-loop-001",
+        "name": "Auto-AB Loop — sampling",
+        "status": "running",
+        "auto_ab_enabled": true,
+        "auto_ab_status": "sampling",
+        "current_iteration": 1,
+        "current_sample_visitors": 60,
+        "auto_ab_config": {
+          "risk_level": "low",
+          "decision_sample_amount": 200,
+          "min_sample_size": 200,
+          "winner_action": "auto_apply",
+          "scope": ["text", "images"],
+          "conversion_goal_interaction_id": "conv-1"
+        },
+        "winner_variant_id": null,
+        "variants": [
+          { "_id": "v-control-001", "isPrimary": true, "name": "Variant 1" },
+          { "_id": "v-challenger-001", "isPrimary": false, "name": "AI Variant #1" }
+        ],
+        "visitors": 60,
+        "statisticalSignificance": 0,
+        "startedDate": "2026-05-04T08:00:00.000Z"
+      }
+    ]
+  },
+  "stopped_unpublished": {
+    "tests": [
+      {
+        "id": "test-auto-loop-001",
+        "name": "Auto-AB Loop — stopped",
+        "status": "stopped",
+        "auto_ab_enabled": true,
+        "auto_ab_status": "stopped",
+        "auto_ab_stop_reason": "page_unpublished",
+        "current_iteration": 3,
+        "auto_ab_config": {
+          "risk_level": "medium",
+          "decision_sample_amount": 100,
+          "winner_action": "auto_apply",
+          "scope": ["text"],
+          "conversion_goal_interaction_id": "conv-1"
+        },
+        "winner_variant_id": null,
+        "variants": [
+          { "_id": "v-control-001", "isPrimary": true, "name": "Variant 1" }
+        ],
+        "visitors": 0,
+        "statisticalSignificance": 0,
+        "startedDate": "2026-05-01T08:00:00.000Z"
+      }
+    ]
+  },
+  "empty": { "tests": [] }
+}
