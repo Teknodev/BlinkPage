@@ -1,0 +1,173 @@
+{
+  "abTestList": {
+    "tests": [
+      {
+        "id": "test-auto-ab-awaiting",
+        "name": "Auto-AB Loop — awaiting review",
+        "status": "running",
+        "auto_ab_enabled": true,
+        "auto_ab_status": "awaiting_review",
+        "current_iteration": 2,
+        "current_sample_visitors": 250,
+        "auto_ab_config": {
+          "risk_level": "medium",
+          "decision_sample_amount": 200,
+          "min_sample_size": 100,
+          "winner_action": "recommend",
+          "scope": ["text", "style", "components"],
+          "hypothesis": "Adding social proof above the fold lifts signup conversion.",
+          "conversion_goal_interaction_id": "conv-1"
+        },
+        "winner_variant_id": "v-control-001",
+        "variants": [
+          { "_id": "v-control-001", "isPrimary": true, "name": "Variant 1" },
+          { "_id": "v-challenger-001", "isPrimary": false, "name": "AI Variant #1" }
+        ],
+        "visitors": 250,
+        "statisticalSignificance": 0,
+        "startedDate": "2026-05-01T08:00:00.000Z"
+      }
+    ]
+  },
+  "abTestDetail": {
+    "test": {
+      "_id": "test-auto-ab-awaiting",
+      "id": "test-auto-ab-awaiting",
+      "name": "Auto-AB Loop — awaiting review",
+      "status": "running",
+      "auto_ab_enabled": true,
+      "auto_ab_status": "awaiting_review",
+      "current_iteration": 2,
+      "iteration_count": 2,
+      "winner_variant_id": "v-control-001",
+      "variants": [
+        {
+          "_id": "v-control-001",
+          "name": "Variant 1",
+          "primary": true,
+          "rules": []
+        },
+        {
+          "_id": "v-challenger-001",
+          "name": "AI Variant #1",
+          "primary": false,
+          "rules": []
+        }
+      ],
+      "graph": null,
+      "auto_ab_config": {
+        "risk_level": "medium",
+        "decision_sample_amount": 200,
+        "min_sample_size": 100,
+        "winner_action": "recommend",
+        "scope": ["text", "style", "components"],
+        "hypothesis": "Adding social proof above the fold lifts signup conversion.",
+        "conversion_goal_interaction_id": "conv-1"
+      },
+      "pending_iteration": {
+        "iteration_id": "iter-pending-001",
+        "generated_at": "2026-05-10T12:00:00.000Z",
+        "reasoning": "Last iteration won by tightening the headline and increasing CTA contrast — we'll build on that by adding above-the-fold social proof so the now-clearer CTA gets paired with credibility.",
+        "actions": [
+          {
+            "id": "act-001",
+            "instruction": "Insert a 'Trusted by 12,000+ teams' line directly above the primary CTA in the hero section to add social proof before the click decision.",
+            "category": "text",
+            "target_hint": "hero section, above primary CTA",
+            "requires_component_replacement": false
+          },
+          {
+            "id": "act-002",
+            "instruction": "Increase the hero CTA button background contrast and add a subtle drop-shadow so the click target stands out from the surrounding section background.",
+            "category": "style",
+            "target_hint": "hero primary CTA button",
+            "requires_component_replacement": false
+          },
+          {
+            "id": "act-003",
+            "instruction": "Replace the testimonial block with a logo-row component because a logo row converts better than a single quote for B2B audiences.",
+            "category": "component_swap",
+            "target_hint": "second section after hero — testimonial area",
+            "requires_component_replacement": true
+          }
+        ],
+        "token_usage": {
+          "input_tokens": 4823,
+          "output_tokens": 612,
+          "cached_tokens": 3870
+        }
+      },
+      "iteration_log": [
+        {
+          "iteration_id": "iter-log-003",
+          "iteration_number": 3,
+          "started_at": "2026-05-08T10:00:00.000Z",
+          "ended_at": "2026-05-10T11:00:00.000Z",
+          "decision": "won",
+          "winner_variant_id": "v-challenger-003",
+          "improvement_pct": 12.4,
+          "token_usage": {
+            "input_tokens": 4100,
+            "output_tokens": 560,
+            "cached_tokens": 3200
+          },
+          "actions_applied": [
+            {
+              "id": "applied-001",
+              "instruction": "Shortened the hero headline from 12 to 7 words.",
+              "category": "text",
+              "target_hint": "hero headline",
+              "requires_component_replacement": false
+            }
+          ]
+        },
+        {
+          "iteration_id": "iter-log-002",
+          "iteration_number": 2,
+          "started_at": "2026-05-04T10:00:00.000Z",
+          "ended_at": "2026-05-07T11:00:00.000Z",
+          "decision": "lost",
+          "winner_variant_id": null,
+          "improvement_pct": -3.1,
+          "token_usage": {
+            "input_tokens": 3900,
+            "output_tokens": 480,
+            "cached_tokens": 2800
+          },
+          "actions_applied": [
+            {
+              "id": "applied-002",
+              "instruction": "Tried a more aggressive red hero background gradient.",
+              "category": "style",
+              "target_hint": "hero background",
+              "requires_component_replacement": false
+            }
+          ]
+        },
+        {
+          "iteration_id": "iter-log-001",
+          "iteration_number": 1,
+          "started_at": "2026-04-28T10:00:00.000Z",
+          "ended_at": "2026-05-01T11:00:00.000Z",
+          "decision": "inconclusive",
+          "winner_variant_id": "v-control-001",
+          "improvement_pct": 0.4,
+          "token_usage": {
+            "input_tokens": 3500,
+            "output_tokens": 420,
+            "cached_tokens": 2400
+          },
+          "actions_applied": [
+            {
+              "id": "applied-003",
+              "instruction": "Re-ordered nav links to put Pricing before Features.",
+              "category": "layout",
+              "target_hint": "primary navigation",
+              "requires_component_replacement": false
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
