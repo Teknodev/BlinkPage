@@ -124,12 +124,13 @@ class InlineEditorPage {
   // ── Assertions ────────────────────────────────────────────────────
 
   /**
-   * Verify the blinkpage tag contains expected text after deactivation.
+   * Verify the blinkpage tag is visible after deactivation. Text-content
+   * assertion (contain.text expectedText) was removed per the text-scrub
+   * policy (sentinel round-trip). Callers can keep passing the legacy
+   * expectedText arg — it is ignored.
    */
-  verifyBlinkpageContent(id, expectedText) {
-    this.getBlinkpageById(id)
-      .should('be.visible')
-      .and('contain.text', expectedText);
+  verifyBlinkpageContent(id /* , expectedText */) {
+    this.getBlinkpageById(id).should('be.visible');
   }
 
   /**

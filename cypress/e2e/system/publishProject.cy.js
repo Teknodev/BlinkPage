@@ -49,7 +49,11 @@ describe('Publish Project — Empty canvas gate', () => {
 describe('Publish Project — Canvas has components', () => {
   beforeEach(() => {
     loginToEditor();
-    // Leave whatever components are already on the canvas — do not clear
+    // Leave whatever components are already on the canvas — do not clear.
+    // Verify the header has rendered and the canvas already carries at least
+    // one component before the test body runs — these are setup preconditions.
+    cy.get('[data-cy="header"]', { timeout: 15000 }).should('be.visible');
+    cy.get('[data-component-index]', { timeout: 10000 }).should('have.length.at.least', 1);
   });
 
   afterEach(() => {
@@ -57,11 +61,6 @@ describe('Publish Project — Canvas has components', () => {
   });
 
   it('should have the publish button enabled when the canvas is not empty', () => {
-    cy.get('[data-cy="header"]', { timeout: 15000 }).should('be.visible');
-
-    // Ensure at least one component section is present
-    cy.get('[data-component-index]', { timeout: 10000 }).should('have.length.at.least', 1);
-
     cy.get('[data-cy="publish-btn"]').should('not.be.disabled');
   });
 });

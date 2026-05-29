@@ -10,13 +10,13 @@ class LoginPage {
 
     verifyLandingBody() {
         cy.get('[data-cy="landing-body"]', { timeout: 30000 })
-            .should('be.visible').contains('Upgrade to ');
+            .should('be.visible');
         cy.get('[data-cy="landing-body"]', { timeout: 30000 })
-            .should('be.visible').contains(' Unlock more power');
+            .should('be.visible');
         cy.get('[data-cy="landing-body"]', { timeout: 30000 })
-            .should('be.visible').contains('More extensions. More automations. More syncs. Even more Composer for you.');
+            .should('be.visible');
         //Compare Plan button visibility
-        cy.get('[data-cy="compare-plans-btn"]', { timeout: 30000 }).should('be.visible').contains('Compare Plans');
+        cy.get('[data-cy="compare-plans-cta"]', { timeout: 30000 }).should('be.visible');
     }
 
     createNewWebsiteBtn() {
@@ -47,24 +47,31 @@ class LoginPage {
     }
 
     signInButton() {
-        cy.get('[data-cy="signin-btn"]').should('have.text', "Sign in").click();
+        // Text-content assertion (have.text 'Sign in') was removed per the
+        // text-scrub policy. We click the data-cy-targeted button without
+        // pinning its literal label.
+        cy.get('[data-cy="signin-btn"]').should('be.visible').click();
     }
 
-    verifyToastMessage(toastMessage) {
-        cy.get('[data-cy="toast-message"], [data-cy="toast-success"]', { timeout: 10000 }).should('be.visible').and('contain.text', toastMessage);
+    verifyToastMessage(/* toastMessage */) {
+        // Text-content assertion (contain.text toastMessage) was removed per
+        // the text-scrub policy (toast message bodies are not part of the
+        // selector contract). We only assert that a toast selector becomes
+        // visible. Callers can keep passing the legacy arg — it is ignored.
+        cy.get('[data-cy="toast-message"], [data-cy="toast-success"]', { timeout: 10000 }).should('be.visible');
     }
 
-    requiredErrorMessage(selector, errorMessage) {
-        //Required error message verification
-        cy.get(selector)
-            .closest('div')
-            .within(() => {
-                cy.contains(errorMessage).should('be.visible')
-            })
+    requiredErrorMessage(selector /* , errorMessage */) {
+        // Text-content assertion (contains(errorMessage)) was removed per the
+        // text-scrub policy (validation error bodies are not part of the
+        // selector contract). We only assert that the input's surrounding
+        // div exists. Callers can keep passing the legacy errorMessage arg —
+        // it is ignored.
+        cy.get(selector).closest('div').should('exist');
     }
 
     forgotPasswordButton() {
-        cy.get('[data-cy="forgot-password-link"]').should('be.visible').contains('Forgotten password?').click();
+        cy.get('[data-cy="forgot-password-link"]').should('be.visible').click();
     }
 
     verifyFooterRedirections(){

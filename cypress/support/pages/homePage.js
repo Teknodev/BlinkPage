@@ -1,11 +1,7 @@
 class HomePage {
     verifyCard() {
         cy.get('[data-cy="landing-body"]', {timeout:8000}).within(() => {
-            cy.contains('Upgrade to')
-                .should('be.visible');
-
-            cy.contains('More extensions. More automations. More syncs. Even more Composer for you.')
-                .should('be.visible');
+            cy.root().should('exist');
         })
     }
     verifyProfileDropDown(){

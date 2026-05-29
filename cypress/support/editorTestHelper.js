@@ -11,38 +11,21 @@
  *     addComponent('team', 0);
  *   });
  */
-import data from '../fixtures/data.json';
-
 /** The fixed test project URL — all editor tests share this project. */
 export const TEST_PROJECT_URL = '/project/69f515295ac7bd7572f9590c/editor/0';
 
 /**
- * Log in and navigate straight to the test project editor.
- * Uses cy.session() to cache the auth session across tests — avoids
- * repeated login round-trips and prevents rate-limiting / session-expiry failures.
+ * Log in via the centralized cy.login() programmatic command, then navigate
+ * straight to the test project editor.
+ *
+ * Auth credentials are pulled from cypress.config.js env block (AUTH_USERNAME /
+ * AUTH_PASSWORD). cy.login() uses cy.session() internally to cache the session
+ * across tests and specs.
  */
 export const loginToEditor = () => {
-  cy.session(
-    'blinkpage-auth-session',
-    () => {
-      // Go directly to the authentication page
-      cy.visit('/authentication');
+  cy.login();
 
-      // Fill in the email
-      cy.get('[data-cy="input-email"]', { timeout: 10000 }).should('be.visible').clear().type(data.email);
-
-      // Fill in the password
-      cy.get('[data-cy="password-input"]', { timeout: 10000 }).should('be.visible').clear().type(data.password);
-
-      // Click Sign In
-      cy.get('[data-cy="signin-btn"]', { timeout: 5000 }).should('be.visible').click();
-
-      // Wait for the dashboard to fully load — proves auth token is set
-      cy.get('[data-cy="header"]', { timeout: 30000 }).should('be.visible');
-    }
-  );
-
-  // Navigate to the test project editor (auth is ready)
+  // Navigate to the test project editor (auth token already in localStorage).
   cy.visit(TEST_PROJECT_URL);
 
   // Wait for the editor to be fully ready:

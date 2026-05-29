@@ -13,7 +13,7 @@ class ContactUsPage {
         cy.get('[data-cy="subject-dropdown"]').should('be.visible')
     }
     submitButton(){
-        cy.contains('button', 'Submit').should('be.visible').click()
+        cy.get('[data-cy="contact-submit-btn"]').should('be.visible').click()
 
     }
     inputMessage(message){

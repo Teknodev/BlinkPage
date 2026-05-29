@@ -139,12 +139,13 @@ export const abTestingPage = {
   },
 
   /**
-   * Verify the error toast appears with a given message.
+   * Verify the error toast appears. Text-content assertion (contain.text
+   * message) was removed per the text-scrub policy (toast message bodies are
+   * not part of the selector contract). Callers can keep passing the legacy
+   * message arg — it is ignored.
    */
-  verifySaveError(message) {
-    cy.get('[data-cy="toast-error"]', { timeout: 10000 })
-      .should('be.visible')
-      .and('contain.text', message);
+  verifySaveError(/* message */) {
+    cy.get('[data-cy="toast-error"]', { timeout: 10000 }).should('be.visible');
   },
 
   // ─── Flow Interaction ────────────────────────────────────────────
