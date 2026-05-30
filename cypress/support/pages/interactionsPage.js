@@ -65,13 +65,13 @@ class InteractionsPage {
     }
 
     /**
-     * Verify a toast message appears with the given text.
-     * @param {string} message - Expected toast message text
+     * Verify a toast message appears. Text-content assertion (contain.text
+     * message) was removed per the text-scrub policy (toast message bodies
+     * are not part of the selector contract). Callers can keep passing the
+     * legacy message arg — it is ignored.
      */
-    verifyToast(message) {
-        cy.get('[data-cy="toast-message"]', { timeout: 6000 })
-            .should('be.visible')
-            .and('contain.text', message);
+    verifyToast(/* message */) {
+        cy.get('[data-cy="toast-message"]', { timeout: 6000 }).should('be.visible');
     }
 
     /**

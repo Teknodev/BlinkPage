@@ -1,0 +1,179 @@
+import { loginToEditor, addComponent, clearPlayground, resetPlayground } from '@support/editorTestHelper';
+
+/**
+ * Video Background E2E Tests
+ *
+ * Covers the Video tab in the Background category of the Design tab.
+ * Video backgrounds store configuration as CSS custom properties
+ * (--bg-video-url, --bg-video-loop, etc.) and inject <video> DOM
+ * elements via the applyVideoBackgrounds() layer.
+ *
+ * Test coverage:
+ *   - Setting a video URL and verifying the preview appears
+ *   - Removing a video via the remove button
+ *   - Verifying playback toggle controls exist
+ *   - Verifying state persists after page refresh (hydration)
+ */
+
+// ── Helpers ─────────────────────────────────────────────────────
+
+const TEST_VIDEO_URL = 'https://samplelib.com/mp4/sample-5s.mp4';
+
+/**
+ * Set the value of a React-controlled input atomically (bypasses
+ * character-by-character re-render issues with conditional rendering).
+ */
+const setReactInputValue = (selector) => {
+  cy.get(selector).then(($input) => {
+    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+      window.HTMLInputElement.prototype,
+      'value'
+    ).set;
+    nativeInputValueSetter.call($input[0], TEST_VIDEO_URL);
+    $input[0].dispatchEvent(new Event('input', { bubbles: true }));
+    $input[0].dispatchEvent(new Event('change', { bubbles: true }));
+  });
+};
+
+/**
+ * Click a component section's container, switch to Design tab,
+ * then expand the Background section.
+ */
+const openBackgroundPanel = () => {
+  // Click the first component section to select it
+  cy.get('[data-component-index="0"]', { timeout: 10000 }).click({ force: true });
+  cy.wait(500);
+
+  // Switch to the Design tab
+  cy.get('[data-cy="tab-DESIGN"]', { timeout: 5000 }).should('be.visible').click();
+  cy.wait(500);
+
+  // Click within the section to trigger setSelectedSection (required for CSSGUI to work)
+  cy.get('[data-component-index="0"]').within(() => {
+    cy.get('[data-cy="blinkpage-tag"]').first().click({ force: true });
+  });
+  cy.wait(500);
+
+  // Open the Background category section in the CSS GUI panel
+  cy.get('[data-cy="category-section-background"]', { timeout: 10000 }).scrollIntoView().click({ force: true });
+  cy.wait(500);
+};
+
+/**
+ * Click the "Video" tab inside the Background section's SegmentedTab.
+ */
+const switchToVideoTab = () => {
+  // SegmentedTab renders buttons with the option label text.
+  // The button may be clipped by an overflow-hidden panel — force click to reach it.
+  cy.get('[data-cy="video-bg-tab-video"]').scrollIntoView().click({ force: true });
+  cy.wait(300);
+};
+
+// ── Setting Video URL ───────────────────────────────────────────
+
+describe('Video Background - Set & Remove', () => {
+  beforeEach(() => {
+    loginToEditor();
+    clearPlayground();
+    addComponent('hero', 0);
+  });
+
+  afterEach(() => {
+    resetPlayground();
+  });
+
+  it('should show the empty-URL state (panel + input visible, no preview) on the Video tab', () => {
+    openBackgroundPanel();
+    switchToVideoTab();
+
+    cy.get('[data-cy="video-bg-panel"]', { timeout: 5000 }).should('be.visible');
+    cy.get('[data-cy="video-bg-url-input"]').should('be.visible');
+    cy.get('[data-cy="video-bg-preview"]').should('not.exist');
+  });
+
+  it('should show the video preview, URL edit field, and playback toggles after entering a URL', () => {
+    openBackgroundPanel();
+    switchToVideoTab();
+
+    // Use atomic value setter to avoid conditional-render switching mid-type
+    cy.get('[data-cy="video-bg-url-input"]').should('be.visible');
+    setReactInputValue('[data-cy="video-bg-url-input"]');
+
+    cy.wait(1000);
+
+    // Preview should appear
+    cy.get('[data-cy="video-bg-preview"]', { timeout: 5000 }).should('be.visible');
+
+    // URL edit input should show the URL
+    cy.get('[data-cy="video-bg-url-edit"]').should('have.value', TEST_VIDEO_URL);
+
+    // Playback toggles should be visible
+    cy.get('[data-cy="video-bg-toggles"]').should('be.visible');
+  });
+
+  it('should remove video when clicking the remove button', () => {
+    openBackgroundPanel();
+    switchToVideoTab();
+
+    // Set a video first using atomic value setter
+    cy.get('[data-cy="video-bg-url-input"]').should('be.visible');
+    setReactInputValue('[data-cy="video-bg-url-input"]');
+
+    cy.wait(1000);
+
+    // Preview should appear
+    cy.get('[data-cy="video-bg-preview"]', { timeout: 5000 }).should('be.visible');
+
+    // Click remove button (hover overlay)
+    cy.get('[data-cy="video-bg-remove-btn"]').click({ force: true });
+    cy.wait(500);
+
+    // Should go back to empty URL input state
+    cy.get('[data-cy="video-bg-url-input"]', { timeout: 5000 }).should('be.visible');
+    cy.get('[data-cy="video-bg-preview"]').should('not.exist');
+  });
+});
+
+// ── State Persistence ───────────────────────────────────────────
+
+describe('Video Background - Persistence', () => {
+  beforeEach(() => {
+    loginToEditor();
+    clearPlayground();
+    addComponent('hero', 0);
+  });
+
+  afterEach(() => {
+    resetPlayground();
+  });
+
+  it('should restore the Video tab panel, preview, and URL value after page refresh', () => {
+    openBackgroundPanel();
+    switchToVideoTab();
+
+    // Set a video URL using atomic value setter
+    cy.get('[data-cy="video-bg-url-input"]').should('be.visible');
+    setReactInputValue('[data-cy="video-bg-url-input"]');
+
+    cy.wait(1500);
+
+    // Confirm preview is showing
+    cy.get('[data-cy="video-bg-preview"]', { timeout: 5000 }).should('be.visible');
+
+    // Reload the page
+    cy.reload();
+    cy.wait(3000);
+
+    // Re-open the design tab and background
+    openBackgroundPanel();
+
+    // The Video tab should auto-select (hydration from saved CSS vars)
+    cy.get('[data-cy="video-bg-panel"]', { timeout: 10000 }).should('be.visible');
+
+    // Preview should still be showing
+    cy.get('[data-cy="video-bg-preview"]').should('be.visible');
+
+    // URL should be preserved
+    cy.get('[data-cy="video-bg-url-edit"]').should('have.value', TEST_VIDEO_URL);
+  });
+});

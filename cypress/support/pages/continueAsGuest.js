@@ -1,10 +1,10 @@
 class ContinueAsGuestPage {
     continueAsGuestButton() {
-        cy.get('[data-cy="continue-guest-btn"]', { timeout: 20000 }).should('be.visible').contains('Continue as Guest').click();
+        cy.get('[data-cy="continue-guest-btn"]', { timeout: 20000 }).should('be.visible').click();
     }
 
     assertNoWebHead() {
-        cy.contains('You don\'t have any website yet', { timeout: 6000 }).should('be.visible');
+        cy.get('[data-cy="empty-projects-message"]', { timeout: 6000 }).should('be.visible');
     }
 }
 

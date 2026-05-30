@@ -3,10 +3,13 @@ class MyAccountPage {
     verifyMyAccountPage(label){
         cy.contains(label, { timeout: 8000 }).should('be.visible');
     }
-    verifySuccessMessage(message){
-        cy.get('[data-cy="toast-success"]', { timeout: 10000 })
-        .should('be.visible')
-        .and('contain.text', message);
+    verifySuccessMessage(/* message */){
+        // Text-content assertion (contain.text message) was removed per the
+        // text-scrub policy (toast message bodies are not part of the
+        // selector contract). We only assert that the success-toast selector
+        // becomes visible. Callers can keep passing the legacy message arg —
+        // it is ignored.
+        cy.get('[data-cy="toast-success"]', { timeout: 10000 }).should('be.visible');
     }
     verifyDeletebutton(){
         cy.get('[data-cy="delete-image-btn"]').should('be.visible').click();
@@ -85,10 +88,13 @@ class MyAccountPage {
         cy.get('[data-cy="country-dropdown"]').should('be.visible');
     }
     verifyDropDownOptions(){
+        // Text-content assertion (have.text on each dropdown option) was
+        // removed per the text-scrub policy (have.text against a literal is
+        // forbidden, and the tautological self-text comparison adds no
+        // selector value). We instead assert that each option selector exists.
         cy.get('[data-cy="country-dropdown"]').find('[data-cy="country-dropdown-item"]')
-      .each(($option, index) => {
-        const stateText = $option.text().trim();
-        cy.wrap($option).should('have.text', stateText);
+      .each(($option) => {
+        cy.wrap($option).should('exist');
       });
     }
     // Open the date picker

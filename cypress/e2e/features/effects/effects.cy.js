@@ -1,0 +1,221 @@
+import { loginToEditor, addComponent, clearPlayground, resetPlayground } from '@support/editorTestHelper';
+
+/**
+ * Effects E2E Tests
+ *
+ * Covers the classList-based Effects feature in the Design tab.
+ * Effects (Fade Out, Glass, Windowed) are added/removed as shared
+ * pre-built CSS classes on component sections.
+ *
+ * Bug coverage:
+ *   - Verifies that adding an effect does NOT produce the
+ *     "pre-built class not found in editor" error, which was
+ *     caused by addMockClass() + addCssClass(false) creating
+ *     duplicate entries without _id assignment.
+ */
+
+// ── Helpers ─────────────────────────────────────────────────────
+
+/**
+ * Click a component section on the canvas, then switch to the Design tab
+ * and scroll to the Effects category section.
+ */
+const openEffectsPanel = () => {
+  // Click the first component section to select it (sets editingElement)
+  cy.get('[data-component-index="0"]', { timeout: 10000 }).click({ force: true });
+  cy.wait(500);
+
+  // Switch to the Design tab in the right settings panel
+  // PB editor tabs use uppercase labels: CONTENT, DESIGN, INTERACTIONS
+  cy.get('[data-cy="tab-DESIGN"]', { timeout: 5000 }).should('be.visible').click();
+  cy.wait(500);
+
+  // Click a child element inside the section now that the DESIGN tab is active.
+  // traverseDomAndSetSection() fires on mousedown when DESIGN tab is active and resolves
+  // the CSS class key to set selectedSection. Clicking on [data-cy="blinkpage-tag"]
+  // targets a text element inside the component, which has a valid decorateCSS class.
+  cy.get('[data-component-index="0"]').within(() => {
+    cy.get('[data-cy="blinkpage-tag"]').first().click({ force: true });
+  });
+  cy.wait(500);
+
+  // The Effects panel should be present inside the Design tab
+  cy.get('[data-cy="effects-panel"]', { timeout: 10000 }).should('exist');
+};
+
+// ── Adding Effects ──────────────────────────────────────────────
+
+describe('Effects - Add & Remove', () => {
+  beforeEach(() => {
+    loginToEditor();
+    clearPlayground();
+    addComponent('hero', 0);
+  });
+
+  afterEach(() => {
+    resetPlayground();
+  });
+
+  it('should display the effects panel with an add button', () => {
+    openEffectsPanel();
+
+    cy.get('[data-cy="effects-panel"]').should('be.visible');
+    cy.get('[data-cy="add-effect-btn"]').should('be.visible');
+  });
+
+  it('should open the effect picker menu when clicking add', () => {
+    openEffectsPanel();
+
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-menu"]', { timeout: 5000 }).should('be.visible');
+  });
+
+  it('should list fadeOut, glass, and windowed presets in the picker menu', () => {
+    openEffectsPanel();
+
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-menu"]', { timeout: 5000 }).should('be.visible');
+
+    cy.get('[data-cy="effect-picker-fadeOut"]').should('be.visible');
+    cy.get('[data-cy="effect-picker-glass"]').should('be.visible');
+    cy.get('[data-cy="effect-picker-windowed"]').should('be.visible');
+  });
+
+  it('should add a Fade Out effect from the picker', () => {
+    openEffectsPanel();
+
+    // No effect rows initially
+    cy.get('[data-cy^="effect-row-"]').should('not.exist');
+
+    // Add Fade Out — force: true because the item is inside a MUI Menu portal
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-fadeOut"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+
+    // Effect row should appear
+    cy.get('[data-cy="effect-row-fadeOut"]', { timeout: 5000 }).should('be.visible');
+    cy.get('[data-cy="effect-row-fadeOut"]').should('exist');
+  });
+
+  it('should remove an effect when clicking the remove button', () => {
+    openEffectsPanel();
+
+    // Add an effect first
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-glass"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+    cy.get('[data-cy="effect-row-glass"]', { timeout: 5000 }).should('be.visible');
+
+    // Remove it
+    cy.get('[data-cy="effect-remove-glass"]').click({ force: true });
+    cy.get('[data-cy="effect-row-glass"]').should('not.exist');
+  });
+
+  it('should restore the add-effect button after removing the only effect', () => {
+    openEffectsPanel();
+
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-glass"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+    cy.get('[data-cy="effect-row-glass"]', { timeout: 5000 }).should('be.visible');
+
+    cy.get('[data-cy="effect-remove-glass"]').click({ force: true });
+    cy.get('[data-cy="effect-row-glass"]').should('not.exist');
+
+    cy.get('[data-cy="add-effect-btn"]').should('be.visible');
+  });
+
+  it('should hide a picker option after the effect is added', () => {
+    openEffectsPanel();
+
+    // Add Windowed
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-windowed"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+    cy.get('[data-cy="effect-row-windowed"]', { timeout: 5000 }).should('be.visible');
+
+    // Open picker again — Windowed should no longer be listed
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-menu"]', { timeout: 5000 }).should('be.visible');
+    cy.get('[data-cy="effect-picker-windowed"]').should('not.exist');
+  });
+
+  it('should add all three effects sequentially without errors (bug fix: pre-built class seeding)', () => {
+    openEffectsPanel();
+
+    // Add all three effects sequentially — this used to trigger
+    // "pre-built class not found in editor" when addMockClass created
+    // duplicates without _id assignment.
+
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-fadeOut"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+    cy.get('[data-cy="effect-row-fadeOut"]', { timeout: 5000 }).should('be.visible');
+
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-glass"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+    cy.get('[data-cy="effect-row-glass"]', { timeout: 5000 }).should('be.visible');
+
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-windowed"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+    cy.get('[data-cy="effect-row-windowed"]', { timeout: 5000 }).should('be.visible');
+
+    // All three should be visible
+    cy.get('[data-cy^="effect-row-"]').should('have.length', 3);
+  });
+
+  it('should hide the add-effect button once all available presets are added', () => {
+    openEffectsPanel();
+
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-fadeOut"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+    cy.get('[data-cy="effect-row-fadeOut"]', { timeout: 5000 }).should('be.visible');
+
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-glass"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+    cy.get('[data-cy="effect-row-glass"]', { timeout: 5000 }).should('be.visible');
+
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-windowed"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+    cy.get('[data-cy="effect-row-windowed"]', { timeout: 5000 }).should('be.visible');
+
+    cy.get('[data-cy="add-effect-btn"]').should('not.exist');
+  });
+});
+
+// ── Configuration ───────────────────────────────────────────────
+
+describe('Effects - Configuration', () => {
+  beforeEach(() => {
+    loginToEditor();
+    clearPlayground();
+    addComponent('hero', 0);
+  });
+
+  afterEach(() => {
+    resetPlayground();
+  });
+
+  it('should show config button for effects with variables', () => {
+    openEffectsPanel();
+
+    // Add Fade Out (has direction variable)
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-fadeOut"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+    cy.get('[data-cy="effect-row-fadeOut"]', { timeout: 5000 }).should('be.visible');
+
+    // Config (gear) button should exist
+    cy.get('[data-cy="effect-config-fadeOut"]').should('be.visible');
+  });
+
+  it('should open the config popover with blur and tint variable labels when clicking the gear icon on Glass', () => {
+    openEffectsPanel();
+
+    // Add Glass effect (has blur + tint variables)
+    cy.get('[data-cy="add-effect-btn"]').click();
+    cy.get('[data-cy="effect-picker-glass"]', { timeout: 5000 }).should('be.visible').click({ force: true });
+    cy.get('[data-cy="effect-row-glass"]', { timeout: 5000 }).should('be.visible');
+
+    // Click config
+    cy.get('[data-cy="effect-config-glass"]').click({ force: true });
+
+    // Popover should show variable labels
+    cy.get('[data-cy="effect-config-var-label-blur"]', { timeout: 5000 }).should('be.visible');
+    cy.get('[data-cy="effect-config-var-label-tint"]').should('be.visible');
+  });
+});

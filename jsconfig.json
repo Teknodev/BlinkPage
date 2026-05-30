@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": "cypress",
+    "paths": {
+      "@support/*": ["support/*"],
+      "@pages-po/*": ["support/pages/*"],
+      "@fixtures/*": ["fixtures/*"]
+    },
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": ["cypress/**/*"]
+}
